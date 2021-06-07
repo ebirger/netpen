@@ -1,0 +1,50 @@
+settings:
+  title: IPIP
+
+items:
+  - subnet:
+      name: default
+      cidr: 198.51.100.0/24
+
+  - subnet:
+      name: overlay
+      cidr: 10.0.0.0/24
+
+  - netns:
+      name: zone1
+
+  - netns:
+      name: zone2
+
+  - netns:
+      name: router
+
+  - veth:
+      name: z1tor
+      dev1:
+        netns: netns.zone1
+        subnets:
+          - subnet.default
+      dev2:
+        netns: netns.router
+        subnets:
+          - subnet.default
+
+  - veth:
+      name: z2tor
+      dev1:
+        netns: netns.zone2
+        subnets:
+          - subnet.default
+      dev2:
+        netns: netns.router
+        subnets:
+          - subnet.default
+
+  - tunnel:
+      name: tnl0
+      mode: ipip
+      subnets:
+        - subnet.overlay
+      link1: veth.z1tor.dev1
+      link2: veth.z2tor.dev1

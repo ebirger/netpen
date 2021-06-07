@@ -1,0 +1,47 @@
+settings:
+  title: Bridge
+
+items:
+  - subnet:
+      name: default
+      cidr: 198.51.100.0/24
+
+  - netns:
+      name: a
+
+  - netns:
+      name: b
+
+  - netns:
+      name: br
+
+  - veth:
+      name: atobr
+      dev1:
+        netns: netns.a
+        subnets:
+          - subnet.default
+      dev2:
+        netns: netns.br
+        subnets:
+          - subnet.default
+
+  - veth:
+      name: btobr
+      dev1:
+        netns: netns.b
+        subnets:
+          - subnet.default
+      dev2:
+        netns: netns.br
+        subnets:
+          - subnet.default
+
+  - bridge:
+      name: br0
+      netns: netns.br
+      ports:
+        - veth.atobr.dev2
+        - veth.btobr.dev2
+      subnets:
+        - subnet.default

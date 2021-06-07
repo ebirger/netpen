@@ -1,0 +1,45 @@
+settings:
+  title: Team
+
+items:
+  - subnet:
+      name: default
+      cidr: 198.51.100.0/24
+
+  - netns:
+      name: a
+
+  - netns:
+      name: b
+
+  - veth:
+      name: atob1
+      dev1:
+        netns: netns.a
+      dev2:
+        netns: netns.b
+
+  - veth:
+      name: atob2
+      dev1:
+        netns: netns.a
+      dev2:
+        netns: netns.b
+
+  - team:
+      name: teama
+      netns: netns.a
+      ports:
+        - veth.atob1.dev1
+        - veth.atob2.dev1
+      subnets:
+        - subnet.default
+
+  - team:
+      name: teamb
+      netns: netns.b
+      ports:
+        - veth.atob1.dev2
+        - veth.atob2.dev2
+      subnets:
+        - subnet.default

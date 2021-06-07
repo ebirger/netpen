@@ -1,0 +1,54 @@
+settings:
+  title: VTI6
+
+items:
+  - subnet:
+      name: red
+      cidr: 2001:DB8::/32
+
+  - subnet:
+      name: green
+      cidr: 10.0.0.0/24
+
+  - netns:
+      name: alice
+
+  - netns:
+      name: bob
+
+  - netns:
+      name: eve
+
+  - veth:
+      name: alicetoeve
+      dev1:
+        netns: netns.alice
+        subnets:
+          - subnet.red
+      dev2:
+        netns: netns.eve
+        subnets:
+          - subnet.red
+
+  - veth:
+      name: bobtoeve
+      dev1:
+        netns: netns.bob
+        subnets:
+          - subnet.red
+      dev2:
+        netns: netns.eve
+        subnets:
+          - subnet.red
+
+  - tunnel:
+      name: safe
+      mode: xfrm
+      subnets:
+        - subnet.green
+      link1: veth.alicetoeve.dev1
+      link2: veth.bobtoeve.dev1
+      dev1:
+        mode: vti6
+      dev2:
+        mode: vti6

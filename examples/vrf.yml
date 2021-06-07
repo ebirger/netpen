@@ -1,0 +1,84 @@
+settings:
+  title: VRF
+
+items:
+  - subnet:
+      name: green
+      cidr: 198.51.100.0/24
+
+  - subnet:
+      name: blue
+      cidr: 198.51.100.0/24
+
+  - netns:
+      name: a
+
+  - netns:
+      name: b
+
+  - netns:
+      name: c
+
+  - netns:
+      name: d
+
+  - netns:
+      name: router
+
+  - veth:
+      name: ator
+      dev1:
+        netns: netns.a
+        subnets:
+          - subnet.green
+      dev2:
+        netns: netns.router
+        subnets:
+          - subnet.green
+
+  - veth:
+      name: btor
+      dev1:
+        netns: netns.b
+        subnets:
+          - subnet.green
+      dev2:
+        netns: netns.router
+        subnets:
+          - subnet.green
+
+  - veth:
+      name: ctor
+      dev1:
+        netns: netns.c
+        subnets:
+          - subnet.blue
+      dev2:
+        netns: netns.router
+        subnets:
+          - subnet.blue
+
+  - veth:
+      name: dtor
+      dev1:
+        netns: netns.d
+        subnets:
+          - subnet.blue
+      dev2:
+        netns: netns.router
+        subnets:
+          - subnet.blue
+
+  - vrf:
+      name: vrfgreen
+      netns: netns.router
+      members:
+        - veth.ator.dev2
+        - veth.btor.dev2
+
+  - vrf:
+      name: vrfblue
+      netns: netns.router
+      members:
+        - veth.ctor.dev2
+        - veth.dtor.dev2

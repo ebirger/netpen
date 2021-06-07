@@ -1,0 +1,93 @@
+settings:
+  title: VXLAN Bridge
+
+items:
+  - subnet:
+      name: default
+      cidr: 198.51.100.0/24
+
+  - subnet:
+      name: overlay
+      cidr: 10.0.0.0/24
+
+  - netns:
+      name: zone1
+
+  - netns:
+      name: router1
+
+  - netns:
+      name: br
+
+  - netns:
+      name: zone2
+
+  - netns:
+      name: router2
+
+  - veth:
+      name: z1tor1
+      dev1:
+        netns: netns.zone1
+        subnets:
+          - subnet.default
+      dev2:
+        netns: netns.router1
+        subnets:
+          - subnet.default
+
+  - veth:
+      name: r1tobr
+      dev1:
+        netns: netns.router1
+        subnets:
+          - subnet.default
+      dev2:
+        netns: netns.br
+        subnets:
+          - subnet.default
+
+  - veth:
+      name: z2tor2
+      dev1:
+        netns: netns.zone2
+        subnets:
+          - subnet.default
+      dev2:
+        netns: netns.router2
+        subnets:
+          - subnet.default
+
+  - veth:
+      name: r2tobr
+      dev1:
+        netns: netns.router2
+        subnets:
+          - subnet.default
+      dev2:
+        netns: netns.br
+        subnets:
+          - subnet.default
+
+  - tunnel:
+      name: vxlan1
+      mode: vxlan
+      subnets:
+        - subnet.overlay
+      link1: veth.z1tor1.dev1
+      link2: veth.r1tobr.dev2
+
+  - tunnel:
+      name: vxlan2
+      mode: vxlan
+      subnets:
+        - subnet.overlay
+      link1: veth.z2tor2.dev1
+      link2: veth.r2tobr.dev2
+
+  - bridge:
+      name: br0
+      netns: netns.br
+      ports:
+        - tunnel.vxlan1.dev2
+        - tunnel.vxlan2.dev2

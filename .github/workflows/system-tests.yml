@@ -1,0 +1,29 @@
+name: System Tests
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        sudo apt install wireguard-tools
+        python -m pip install --upgrade pip
+        pip install -r netpen/requirements.txt
+        pip install -r dev/requirements.txt
+    - name: Test with pytest
+      run: PYTHONPATH=. pytest dev/tests/system-tests --junitxml=junit/system-test-results.xml
+    - name: Publish Unit Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1
+      if: always()
+      with:
+        files: junit/system-test-results.xml
+        pull_request_build: commit

@@ -1,0 +1,56 @@
+- title: Basic
+  items:
+    - name: Router
+      path: router.yml
+
+    - name: Bridge
+      path: bridge.yml
+
+    - name: VLAN
+      path: vlan.yml
+
+    - name: MACVLAN
+      path: macvlan.yml
+
+    - name: Team
+      path: team.yml
+
+    - name: XFRM Transport
+      path: xfrm_transport.yml
+
+- title: Tunneling
+  items:
+    - name: Wireguard
+      path: wireguard.yml
+
+    - name: XFRM Interface
+      path: xfrmi.yml
+
+    - name: VTI
+      path: vti.yml
+
+    - name: VTI6
+      path: vti6.yml
+
+    - name: IPIP
+      path: ipip.yml
+
+    - name: IPIP6
+      path: ipip6.yml
+
+    - name: VXLAN
+      path: vxlan.yml
+
+    - name: GRE
+      path: gre.yml
+
+- title: Advanced
+  items:
+    - name: Virtual Routing and Forwarding (VRF)
+      path: vrf.yml
+
+    - name: GRE over XFRM
+      path: gre_xfrm.yml
+
+    - name: VXLAN Bridging
+      path: vxlan_bridge.yml

@@ -1,0 +1,39 @@
+version: "3"
+services:
+    rest:
+        build:
+           context: ..
+           dockerfile: ./dev/rest/Dockerfile
+        container_name: netpen-rest
+        volumes:
+           - ..:/app
+        ports:
+           - 5000:5000
+        environment:
+          - FLASK_APP=./dev/rest/__main__.py
+    examples:
+        image: nginx
+        ports:
+            - 8866:80
+        volumes:
+            - ../examples:/usr/share/nginx/html:ro
+            - ../dev/nginx/examples:/etc/nginx/conf.d/
+    demuxer:
+        image: nginx
+        ports:
+            - 8199:80
+        volumes:
+            - ../dev/nginx/demuxer:/etc/nginx/conf.d/
+    web:
+        build:
+           context: ..
+           dockerfile: ./web/Dockerfile
+        container_name: netpen-web
+        entrypoint: yarn start
+        environment:
+            - REACT_APP_API_BASE=/
+            - REACT_APP_EXAMPLES_BASE=/example-files/
+        volumes:
+            - ../web:/app
+        ports:
+            - 3000:3000

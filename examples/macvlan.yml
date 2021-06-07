@@ -1,0 +1,52 @@
+settings:
+  title: MACVLAN
+
+items:
+  - subnet:
+      name: default
+      cidr: 198.51.100.0/24
+
+  - netns:
+      name: a
+
+  - netns:
+      name: b
+
+  - netns:
+      name: c
+
+  - netns:
+      name: d
+
+  - netns:
+      name: e
+
+  - veth:
+      name: atob
+      dev1:
+        netns: netns.a
+        subnets:
+          - subnet.default
+      dev2:
+        netns: netns.b
+
+  - macvlan:
+      name: vc
+      link: veth.atob.dev2
+      netns: netns.c
+      subnets:
+        - subnet.default
+
+  - macvlan:
+      name: vd
+      link: veth.atob.dev2
+      netns: netns.d
+      subnets:
+        - subnet.default
+
+  - macvlan:
+      name: ve
+      link: veth.atob.dev2
+      netns: netns.e
+      subnets:
+        - subnet.default

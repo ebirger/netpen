@@ -1,0 +1,29 @@
+settings:
+  title: XFRM Transport
+
+items:
+  - subnet:
+      name: default
+      cidr: 198.51.100.0/24
+
+  - netns:
+      name: a
+
+  - netns:
+      name: b
+
+  - veth:
+      name: atob
+      dev1:
+        netns: netns.a
+        subnets:
+          - subnet.default
+      dev2:
+        netns: netns.b
+        subnets:
+          - subnet.default
+
+  - xfrm_transport:
+      name: ipsec0
+      link1: veth.atob.dev1
+      link2: veth.atob.dev2

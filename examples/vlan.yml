@@ -1,0 +1,42 @@
+settings:
+  title: VLAN
+
+items:
+  - subnet:
+      name: default
+      cidr: 198.51.100.0/24
+
+  - subnet:
+      name: vlan
+      cidr: 10.0.0.0/24
+
+  - netns:
+      name: a
+
+  - netns:
+      name: b
+
+  - veth:
+      name: atob
+      dev1:
+        netns: netns.a
+        subnets:
+          - subnet.default
+      dev2:
+        netns: netns.b
+        subnets:
+          - subnet.default
+
+  - vlan:
+      name: va
+      link: veth.atob.dev1
+      tag: 15
+      subnets:
+        - subnet.vlan
+
+  - vlan:
+      name: vb
+      link: veth.atob.dev2
+      tag: 15
+      subnets:
+        - subnet.vlan
