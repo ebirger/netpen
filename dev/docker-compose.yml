@@ -11,6 +11,7 @@ services:
            - 5000:5000
         environment:
           - FLASK_APP=./dev/rest/__main__.py
+          - FLASK_ENV=development
     examples:
         image: nginx
         ports:
