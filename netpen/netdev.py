@@ -102,10 +102,10 @@ class NetDev():
             self.p('ip -net %s link set %s mtu %s' % (self.ns.name, self.name,
                                                       self.mtu))
         for a in self.addrs:
-            dad = 'nodad' if net_family(a) == socket.AF_INET6 else ''
-            self.p('ip %s -net %s addr add %s dev %s %s' % (_flag6(a),
-                                                            self.ns.name,
-                                                            a, self.name, dad))
+            dad = ' nodad' if net_family(a) == socket.AF_INET6 else ''
+            self.p('ip %s -net %s addr add %s dev %s%s' % (_flag6(a),
+                                                           self.ns.name,
+                                                           a, self.name, dad))
         for k, v in self.ethtool.items():
             val = 'on' if v else 'off'
             self.p('ip netns exec %s ethtool -K %s %s %s' % (self.ns.name,
