@@ -15,6 +15,7 @@ and routes.
 ## Examples
 
 ### Simple Router
+
 ![Simple Router](/examples/router.png?raw=true)
 
 The resulting script will create three network namespaces - "a", "b", and "router".
@@ -22,13 +23,13 @@ The resulting script will create three network namespaces - "a", "b", and "route
 Running on a fresh VM:
 
 ```bash
-root@(none):/# ./netpen.sh 
- ____                 _               
-|  _ \   ___   _   _ | |_   ___  _ __ 
+root@(none):/# ./netpen.sh
+ ____                 _
+|  _ \   ___   _   _ | |_   ___  _ __
 | |_) | / _ \ | | | || __| / _ \| '__|
-|  _ < | (_) || |_| || |_ |  __/| |   
-|_| \_\ \___/  \__,_| \__| \___||_|   
-                                      
+|  _ < | (_) || |_| || |_ |  __/| |
+|_| \_\ \___/  \__,_| \__| \___||_|
+
 
 +-----------+------------------------------------+
 | Namespace | IPv4                               |
@@ -59,6 +60,7 @@ PING 198.51.100.1 (198.51.100.2) 56(84) bytes of data.
 64 bytes from 198.51.100.2: icmp_seq=1 ttl=63 time=7.00 ms
 64 bytes from 198.51.100.2: icmp_seq=2 ttl=63 time=0.956 ms
 ```
+
 ## Run Locally
 
 Clone the project
@@ -78,7 +80,15 @@ Start the servers
 ```bash
   make dev
 ```
+
 This will bring up a local docker-compose based environment. You can then browse to http://localhost:8199/
+
+(Optional) Rebuild the Docker images after modifying if needed
+
+```bash
+  make build-dev
+```
+
 ## Running Tests
 
 ### Validation Tests
@@ -99,6 +109,7 @@ To run them, use the following command:
 ```bash
   make system-tests
 ```
+
 ## API Reference
 
 #### Generate BASH script
@@ -107,11 +118,12 @@ To run them, use the following command:
   POST /v1/bash
 ```
 
-| Parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `body`    | `string` |  **Required**. YAML file describing the network topology |
+| Parameter | Type     | Description                                             |
+| :-------- | :------- | :------------------------------------------------------ |
+| `body`    | `string` | **Required**. YAML file describing the network topology |
 
 You can try this using cURL:
+
 ```bash
 curl --data-binary "@examples/router.yml" https://api.netpen.io/v1/bash
 ```
@@ -123,15 +135,17 @@ cat ./examples/router.yml | http POST https://api.netpen.io/v1/bash
 ```
 
 #### Generate Graphviz DOT document
+
 ```http
   POST /v1/dot
 ```
 
-| Parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `body`    | `string` |  **Required**. YAML file describing the network topology |
+| Parameter | Type     | Description                                             |
+| :-------- | :------- | :------------------------------------------------------ |
+| `body`    | `string` | **Required**. YAML file describing the network topology |
 
 You can pipe this via Graphviz, for example:
+
 ```bash
 curl --data-binary "@examples/router.yml" https://api.netpen.io/v1/dot | dot -Tpng | display
 ```
@@ -142,7 +156,6 @@ curl --data-binary "@examples/router.yml" https://api.netpen.io/v1/dot | dot -Tp
 
 **Backend:** Python, Flask (local) / AWS API GW & Lambda (deployed)
 
-  
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)

@@ -41,3 +41,7 @@ services:
             - 3000:3000
 volumes:
   web_modules:
+networks:
+    default:
+        external:
+            name: netpen-docker-compose-net
