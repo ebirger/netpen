@@ -7,10 +7,10 @@ cli/out/$(TARGET): netpen
 
 $(TARGET): cli/out/$(TARGET)
 
-dev lint pycodestyle validation-tests system-tests:
+dev build-dev dev-ext build-dev-ext lint pycodestyle validation-tests system-tests:
 	$(MAKE) -C dev $@
 
 screenshots:
 	$(MAKE) -C examples $@
 
-.PHONY: $(TARGET) dev lint pycodestyle validation-tests system-tests screenshots
+.PHONY: $(TARGET) dev build-dev dev-ext build-dev-ext lint pycodestyle validation-tests system-tests screenshots
