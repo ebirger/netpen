@@ -30,11 +30,14 @@ services:
            context: ..
            dockerfile: ./web/Dockerfile
         container_name: netpen-web
-        entrypoint: yarn start
+        entrypoint: /bin/sh -c "yarn install && yarn start"
         environment:
             - REACT_APP_API_BASE=/
             - REACT_APP_EXAMPLES_BASE=/example-files/
         volumes:
             - ../web:/app
+            - web_modules:/app/node_modules
         ports:
             - 3000:3000
+volumes:
+  web_modules:
