@@ -156,6 +156,10 @@ curl --data-binary "@examples/router.yml" https://api.netpen.io/v1/dot | dot -Tp
 
 **Backend:** Python, Flask (local) / AWS API GW & Lambda (deployed)
 
+## Logo
+
+Logo design by [Amir Rave](https://github.com/amirave)
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
