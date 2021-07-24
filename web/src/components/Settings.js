@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Input, Modal } from 'antd';
+import { Button, Input, Modal, Checkbox, Divider } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
 import Field from './Field.js';
 
@@ -27,6 +27,22 @@ export default function Settings(props) {
     setSettings(copy);
   }
 
+  function onFailOnErrChange(ev) {
+    let copy = {...settings};
+    copy.fail_on_error = ev.target.checked;
+    setSettings(copy);
+  }
+
+  function onVerboseChange(ev) {
+    let copy = {...settings};
+    copy.verbose = ev.target.checked;
+    setSettings(copy);
+  }
+
+  function failOnErr() {
+    return settings.fail_on_error === undefined ? true : settings.fail_on_error;
+  }
+
   return (
     <>
       <Button type="primary" icon={<SettingOutlined />}
@@ -38,6 +54,13 @@ export default function Settings(props) {
         <Field title="Title">
           <Input onChange={onTitleChange} value={settings.title} />
         </Field>
+        <Divider />
+        <Checkbox checked={failOnErr()} onChange={onFailOnErrChange}>
+          Fail on Error
+        </Checkbox>
+        <Checkbox checked={settings.verbose} onChange={onVerboseChange}>
+          Verbose
+        </Checkbox>
       </Modal>
     </>
   );

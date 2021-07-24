@@ -92,7 +92,9 @@ class Topology():
         self.prereqs.add_edge(obj, prereq)
 
     def render_bash(self):
-        self.printfn('#!/bin/bash\n')
+        fail_on_err = ' -e' if self.settings.get('fail_on_error', True) else ''
+        verbose = ' -x' if self.settings.get('verbose', False) else ''
+        self.printfn('#!/bin/bash%s%s\n' % (fail_on_err, verbose))
 
         title = self.settings.get('title') or 'netpen'
         self.printfn('cat << "EOF"')
