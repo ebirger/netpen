@@ -53,6 +53,12 @@ class NetNs(TopologyMember):
         return list(chain.from_iterable((d.addr_pools.values()
                                          for d in self._devs)))
 
+    def _render_bash_move_local_iprule_pref(self):
+        for v6flag in ('', '-6'):
+            self.p('ip %s -net %s rule del pref 0' % (v6flag, self.name))
+            self.p('ip %s -net %s rule add pref 32765 from all lookup local' %
+                   (v6flag, self.name))
+
     def render_bash(self):
         self.p('ip netns add %s' % self.name)
         sysctls = []
@@ -62,6 +68,8 @@ class NetNs(TopologyMember):
             self.p('ip netns exec %s sysctl -w %s' % (self.name, sc))
         if self.netserver:
             self.p('ip netns exec %s netserver' % self.name)
+        if self._vrfs:
+            self._render_bash_move_local_iprule_pref()
 
     def render_dot(self):
         if not self._vrfs and not self._devs:
