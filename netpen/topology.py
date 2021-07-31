@@ -140,6 +140,10 @@ class Topology():
         self.printfn('rankdir = "TB"')
         self.done_list = set()
         for cls in self.builders:
+            subgraph = getattr(cls, 'SUBGRAPH', False)
+            if subgraph:
+                self.printfn('subgraph cluster_%s {' % cls.REF)
+                self.printfn('label="%s"' % subgraph)
             for o in self.objects[cls.REF]:
                 if o in self.done_list:
                     continue
@@ -148,4 +152,6 @@ class Topology():
                     continue
                 f()
                 self.done_list.add(o)
+            if subgraph:
+                self.printfn('}')
         self.printfn('}')
