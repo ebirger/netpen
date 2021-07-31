@@ -18,7 +18,8 @@ class NetDev():
         'netns': {'type': 'string'},
         'subnets': {'type': 'array', 'items': {'type': 'string'}},
         'mtu': {'type': 'integer'},
-        'ethtool': {'type': 'object'}
+        'ethtool': {'type': 'object'},
+        'xdp': {'type': 'string'}
     }
     SCHEMA = {
         'type': 'object',
@@ -51,6 +52,7 @@ class NetDev():
         self.subnets = subnets
         self.noarp = kwargs.get('noarp') or False
         self.ethtool = kwargs.get('ethtool') or {}
+        self.xdp = kwargs.get('xdp')
         self.tss = {}
 
     def p(self, *args, **kwargs):
@@ -68,6 +70,9 @@ class NetDev():
         ethtool = params.get('ethtool')
         if ethtool:
             ret['ethtool'] = ethtool
+        xdp = params.get('xdp')
+        if xdp:
+            ret['xdp'] = xdp
         return ret
 
     @property
@@ -92,6 +97,11 @@ class NetDev():
         if self.addrs:
             label += '|%s' % '|'.join(self.addrs)
         self.p('%s [label="{%s}", shape=record]' % (self.dotname, label))
+        if self.xdp:
+            xdp = self.topology.members.get(self.xdp)
+            if xdp:
+                self.p('%s -- %s [label="XDP", style=dashed]' % (xdp.dotname,
+                                                                 self.dotname))
 
     def render_bash_set_state(self, state):
         self.p('ip -net %s link set %s %s' % (self.ns.name, self.name, state))
@@ -111,4 +121,11 @@ class NetDev():
             self.p('ip netns exec %s ethtool -K %s %s %s' % (self.ns.name,
                                                              self.name, k,
                                                              val))
+        if self.xdp:
+            xdp = self.topology.members.get(self.xdp)
+            if xdp:
+                prog_var = xdp.bash_ebpf_var
+                self.p('ip -net %s link set %s xdp object "$%s"' % (
+                    self.ns.name, self.name, prog_var))
+
         self.topology.done_list.add(self)
