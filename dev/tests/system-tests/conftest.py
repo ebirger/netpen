@@ -8,6 +8,9 @@ from dev.tests.common.utils import EXAMPLES_OUTPUT_DIR, EXAMPLES_DIR
 from dev.tests.common.utils import examples_output_dir  # pylint: disable=unused-import
 
 
+DEF_SUBNET_NAME = 'default'
+
+
 def kill_all_netns():
     subprocess.run(['sudo', 'ip', '-all', 'netns', 'delete'], check=False)
 

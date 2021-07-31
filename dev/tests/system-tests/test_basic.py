@@ -4,11 +4,8 @@
 import pytest
 from conftest import get_ns_addr_in_subnet, get_subnet, get_subnets
 from conftest import ping, modprobe, get_route_dev, get_xfrm_packet_counts
-from conftest import deploy_script
+from conftest import deploy_script, DEF_SUBNET_NAME
 from dev.tests.common.utils import gen_examples  # pylint: disable=unused-import
-
-
-DEF_SUBNET_NAME = 'default'
 
 
 def test_router(gen_examples, cleanup_nets):
