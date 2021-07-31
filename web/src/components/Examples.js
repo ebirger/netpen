@@ -7,7 +7,7 @@ import { getExampleFile } from '../models/Examples.js';
 
 export function ExamplesPenLoader() {
   return (
-    <CopyToPersonalPens>
+    <CopyToPersonalPens originalPenType="example">
       <PenLoader getById={getExampleFile} />
     </CopyToPersonalPens>
   );
@@ -23,7 +23,7 @@ export default function Examples() {
   useEffect(getItems, []);
 
   return (
-    <CopyToPersonalPens>
+    <CopyToPersonalPens originalPenType="example">
       <PenList title="Examples" items={examples} getById={getExampleFile}
         linkpfx="examples" />
     </CopyToPersonalPens>

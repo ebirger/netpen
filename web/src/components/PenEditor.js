@@ -30,7 +30,8 @@ export default function PenEditor(props) {
       titleitems={
         <ToolbarButtons settings={settings} onCopy={props.onCopy}
           onSettingsChange={setSettings} objlist={objlist} />}>
-      <Pen objlist={objlist} setObjList={setObjList} />
+      <Pen objlist={objlist} setObjList={setObjList}
+        onUpdate={props.onUpdate} />
     </SiteLayout>
   );
 }
@@ -38,5 +39,6 @@ export default function PenEditor(props) {
 PenEditor.propTypes = {
   defaults: PropTypes.object,
   update: PropTypes.func,
-  onCopy: PropTypes.func
+  onCopy: PropTypes.func,
+  onUpdate: PropTypes.func
 };

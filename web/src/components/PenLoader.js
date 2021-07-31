@@ -37,11 +37,13 @@ export default function PenLoader(props) {
 
   return defs ? <PenEditor onCopy={props.onCopy ? onCopy : null}
     update={props.update ? update : null}
+    onUpdate={props.onUpdate}
     defaults={defs} /> : [];
 }
 
 PenLoader.propTypes = {
   getById: PropTypes.func.isRequired,
   update: PropTypes.func,
-  onCopy: PropTypes.func
+  onCopy: PropTypes.func,
+  onUpdate: PropTypes.func
 };

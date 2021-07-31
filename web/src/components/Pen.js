@@ -26,6 +26,9 @@ export default function Pen(props) {
       body: JSON.stringify(postBody)
     };
 
+    if (props.onUpdate)
+      props.onUpdate()
+
     fetch(dotUrl, requestMetadata).then(res => res.text())
       .then(o => {setDot(o);});
   }
@@ -129,4 +132,5 @@ export default function Pen(props) {
 Pen.propTypes = {
   objlist: PropTypes.object.isRequired,
   setObjList: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func
 };
