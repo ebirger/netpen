@@ -12,6 +12,25 @@ different tunneling devices, etc. and generates bash scripts usable on fresh
 VMs which include the necessary configuration including address assignments
 and routes.
 
+:warning: These scripts are **NOT** intended for a production environments.
+
+## Current Item Types
+- Network Namespace
+- VETH
+- Bridge
+- VLAN
+- MACVLAN
+- Team
+- XFRM transport
+- Tunnels:
+  - XFRM
+  - IPIP
+  - VXLAN
+  - GRE
+  - WireGuard
+- Virtual Routing and Forwarding (VRF)
+- eBPF Program
+
 ## Examples
 
 ### Simple Router
