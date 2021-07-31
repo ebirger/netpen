@@ -43,6 +43,10 @@ export const Types = [
     value: 'xfrm_transport',
     label: 'XFRM Transport',
   },
+  {
+    value: 'ebpfprog',
+    label: 'eBPF Program',
+  },
 ];
 
 export function GetTypeName(type) {

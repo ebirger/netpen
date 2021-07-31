@@ -9,6 +9,7 @@ import TeamModel from './TeamModel.js';
 import DummyModel from './DummyModel.js';
 import VrfModel from './VrfModel.js';
 import XfrmTransportModel from './XfrmTransportModel.js';
+import EbpfProgModel from './EbpfProgModel.js';
 import { getItemById } from './ObjModel.js'; 
 
 export const objModels = {
@@ -23,6 +24,7 @@ export const objModels = {
   dummy: DummyModel,
   vrf: VrfModel,
   xfrm_transport: XfrmTransportModel,
+  ebpfprog: EbpfProgModel,
 };
 
 export function loadObjList(l) {

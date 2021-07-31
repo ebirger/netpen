@@ -3,12 +3,13 @@ import SubnetModel from './SubnetModel.js';
 import EthtoolModel from './EthtoolModel.js';
 
 export default class NetDevParamsModel extends ObjModel {
-  constructor(id, name, type, netns, subnets, mtu, ethtool) {
+  constructor(id, name, type, netns, subnets, mtu, ethtool, xdp) {
     super(id, name, type);
     this.netns = netns;
     this.subnets = subnets;
     this.mtu = mtu;
     this.ethtool = ethtool;
+    this.xdp = xdp;
   }
 
   toDict(getDictIdbyId) {
@@ -26,12 +27,20 @@ export default class NetDevParamsModel extends ObjModel {
     const ethtool = this.ethtool ? this.ethtool.toDict() : null;
     if (ethtool)
       ret.ethtool = ethtool;
+    if (this.xdp) {
+      const xdp = getDictIdbyId(this.xdp);
+      if (xdp)
+        ret.xdp = xdp;
+    }
     return ret;
   }
 
   resolve(getIdByDictId) {
     if (this.netns)
       this.netns = getIdByDictId(this.netns);
+
+    if (this.xdp)
+      this.xdp = getIdByDictId(this.xdp);
 
     if (this.subnets)
       this.subnets = SubnetModel.listFromDict(getIdByDictId, this.subnets);
@@ -45,6 +54,6 @@ export default class NetDevParamsModel extends ObjModel {
   static fromDict(type, name, params) {
     const ethtool = params.ethtool ? new EthtoolModel(params.ethtool) : null;
     return new NetDevParamsModel(null, name, type, params.netns, params.subnets,
-      params.mtu, ethtool);
+      params.mtu, ethtool, params.xdp);
   }
 }

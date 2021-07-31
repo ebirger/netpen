@@ -16,6 +16,7 @@ import MacVlan from './MacVlan.js';
 import Dummy from './Dummy.js';
 import Vrf from './Vrf.js';
 import XfrmTransport from './XfrmTransport.js';
+import EbpfProg from './EbpfProg.js';
 
 const { Text } = Typography;
 const { Panel } = Collapse;
@@ -25,6 +26,7 @@ const itemComponentTypes = {
   veth: Veth,
   vlan: Vlan,
   subnet: Subnet,
+  ebpfprog: EbpfProg,
   bridge: Bridge,
   team: Team,
   tunnel: Tunnel,
