@@ -101,7 +101,9 @@ class Topology():
         self.printfn(text2art(title))
         self.printfn('EOF\n\n')
 
-        preambles = {getattr(o, 'bash_preamble', None) for o in self.builders}
+        preambles = {getattr(cls, 'bash_preamble', None)
+                     for cls in self.builders
+                     if self.objects[cls.REF]}
         for m in preambles:
             if m:
                 m(self)
