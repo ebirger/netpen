@@ -1,0 +1,37 @@
+settings:
+  title: XDP
+
+items:
+  - subnet:
+      name: default
+      cidr: 198.51.100.0/24
+
+  - netns:
+      name: xdp1
+
+  - netns:
+      name: xdp2
+
+  - ebpfprog:
+      name: prog1
+      code: |
+        #include <linux/bpf.h>
+        
+        #define SEC(NAME) __attribute__((section(NAME), used))
+        
+        SEC("prog")
+        int dropper(struct xdp_md *ctx) {
+          return XDP_DROP;
+        }
+
+  - veth:
+      name: veth1
+      dev1:
+        netns: netns.xdp1
+        subnets:
+          - subnet.default
+        xdp: ebpfprog.prog1
+      dev2:
+        netns: netns.xdp2
+        subnets:
+          - subnet.default

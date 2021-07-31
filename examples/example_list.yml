@@ -54,3 +54,6 @@
 
     - name: VXLAN Bridging
       path: vxlan_bridge.yml
+
+    - name: XDP
+      path: xdp.yml
