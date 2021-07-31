@@ -10,10 +10,12 @@ from .macvlan import MacVlan
 from .bridge import Bridge
 from .team import Team
 from .vrf import Vrf
+from .ebpf import EbpfProg
 
 
-add_builder(NetNs, 0)
-add_builder(Subnet, 1)
+add_builder(EbpfProg, 0)
+add_builder(NetNs, 1)
+add_builder(Subnet, 2)
 add_builder(Veth, 3)
 add_builder(Vlan, 4)
 add_builder(MacVlan, 4)
