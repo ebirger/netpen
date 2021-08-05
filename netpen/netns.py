@@ -14,6 +14,7 @@ class NetNs(TopologyMember):
             'name': {'type': 'string'},
             'netserver': {'type': 'boolean'},
             'forwarding': {'type': 'boolean'},
+            'enable_lo': {'type': 'boolean'},
         }
     }
 
@@ -22,11 +23,13 @@ class NetNs(TopologyMember):
         'net.ipv6.conf.all.forwarding=2'
     ]
 
-    def __init__(self, topology, name, netserver=False, forwarding=True):
+    def __init__(self, topology, name, netserver=False, forwarding=True,
+                 enable_lo=False):
         super().__init__(topology, name)
         self.name = name
         self.netserver = netserver
         self.forwarding = forwarding
+        self.enable_lo = enable_lo
         self._devs = []
         self._vrfs = []
         self._next_vrf_id = 10
@@ -68,6 +71,8 @@ class NetNs(TopologyMember):
             self.p('ip netns exec %s sysctl -w %s' % (self.name, sc))
         if self.netserver:
             self.p('ip netns exec %s netserver' % self.name)
+        if self.enable_lo:
+            self.p('ip -net %s link set lo up' % self.name)
         if self._vrfs:
             self._render_bash_move_local_iprule_pref()
 
@@ -92,8 +97,9 @@ class NetNs(TopologyMember):
     def from_params(cls, topology, params):
         netserver = params.get('netserver', False)
         forwarding = params.get('forwarding', True)
+        enable_lo = params.get('enable_lo', False)
         return cls(topology, params['name'], netserver=netserver,
-                   forwarding=forwarding)
+                   forwarding=forwarding, enable_lo=enable_lo)
 
     @classmethod
     def bash_preamble(cls, topology):

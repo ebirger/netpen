@@ -35,18 +35,28 @@ NsList.propTypes = {
 
 export default function NetNs(props) {
   const netserver = props.item.netserver || false;
+  const enableLo = props.item.enableLo || false;
   const forwarding = props.item.forwarding === false ? false : true;
   const {id, name, type} = props.item;
 
   function setNetServer(ev) {
     const newNetServer = ev.target.checked;
-    const model = new NetNsModel(id, name, type, newNetServer, forwarding);
+    const model = new NetNsModel(id, name, type, newNetServer, forwarding,
+      enableLo);
     props.onChange(model);
   }
 
   function setForwarding(ev) {
     const newForwarding = ev.target.checked;
-    const model = new NetNsModel(id, name, type, netserver, newForwarding);
+    const model = new NetNsModel(id, name, type, netserver, newForwarding,
+      enableLo);
+    props.onChange(model);
+  }
+
+  function setEnableLo(ev) {
+    const newEnableLo = ev.target.checked;
+    const model = new NetNsModel(id, name, type, netserver, forwarding,
+      newEnableLo);
     props.onChange(model);
   }
 
@@ -57,6 +67,9 @@ export default function NetNs(props) {
       </Checkbox>
       <Checkbox checked={netserver} onChange={setNetServer}>
         Run netserver
+      </Checkbox>
+      <Checkbox checked={enableLo} onChange={setEnableLo}>
+        Enable Loopback Interface
       </Checkbox>
     </>
   );

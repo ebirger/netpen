@@ -4,8 +4,9 @@
 import pytest
 from conftest import get_ns_addr_in_subnet, get_subnet, get_subnets
 from conftest import ping, modprobe, get_route_dev, get_xfrm_packet_counts
-from conftest import deploy_script, DEF_SUBNET_NAME
+from conftest import deploy_script, DEF_SUBNET_NAME, ip_cmd
 from dev.tests.common.utils import gen_examples  # pylint: disable=unused-import
+from dev.tests.common.utils import deploy_yaml
 
 
 def test_router(gen_examples, cleanup_nets):
@@ -122,3 +123,28 @@ def test_xfrm_transport(gen_examples, cleanup_nets):
     ping('b', aincidr)
     assert get_xfrm_packet_counts('a') == [2, 2]
     assert get_xfrm_packet_counts('b') == [2, 2]
+
+
+def test_lo(cleanup_nets):
+    NS1_NAME = 'test_feature1'
+    NS2_NAME = 'test_feature2'
+    YAML_TMPL = '''
+items:
+  - netns:
+      name: %(ns1)s
+      enable_lo: true
+
+  - netns:
+      name: %(ns2)s
+'''
+
+    t = YAML_TMPL % {'ns1': NS1_NAME, 'ns2': NS2_NAME}
+
+    deploy_yaml(t)
+
+    def _get_lo_state(ns):
+        output = ip_cmd(ns, 'link', 'show', 'dev', 'lo')
+        return bool('UP' in output[0]['flags'])
+
+    assert _get_lo_state(NS1_NAME) is True
+    assert _get_lo_state(NS2_NAME) is False
