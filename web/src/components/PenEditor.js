@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { notification } from 'antd'
 import SiteLayout from './SiteLayout.js';
 import ToolbarButtons from './ToolbarButtons.js';
+import PenDescription from './PenDescription.js';
 import Pen from './Pen.js';
 
 export default function PenEditor(props) {
@@ -46,6 +47,9 @@ export default function PenEditor(props) {
         <ToolbarButtons settings={settings} onCopy={props.onCopy}
           onSettingsChange={setSettings} objlist={objlist} />}>
       <Pen objlist={objlist} setObjList={setObjList} />
+      {settings.description ?
+        <PenDescription text={settings.description}/> : 
+        []}
     </SiteLayout>
   );
 }

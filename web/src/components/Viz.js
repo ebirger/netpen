@@ -58,7 +58,7 @@ function Graph(props) {
   const w = svg.getAttribute('width');
   return (
     <MapInteractionCSS>
-      <div style={{height: h, width: w, minHeight: '80vh' }}
+      <div style={{height: h, width: w, minHeight: '60vh' }}
         ref={svgWrapperRef} />
     </MapInteractionCSS>
   );
