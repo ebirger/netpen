@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect, useReducer, useRef } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'antd';
 import GViz from './Viz.js';
@@ -17,7 +17,6 @@ const dotUrl = API_BASE + 'v1/dot';
 export default function Pen(props) {
   const [dot, setDot] = useState('');
   const [graphElements, setGraphElements] = useState({})
-  const firstUpdate = useRef(true);
 
   function up() {
     const postBody = {items: serializeObjList(props.objlist)};
@@ -26,11 +25,6 @@ export default function Pen(props) {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(postBody)
     };
-
-    if (props.onUpdate && !firstUpdate.current)
-      props.onUpdate()
-
-    firstUpdate.current = false;
 
     fetch(dotUrl, requestMetadata).then(res => res.text())
       .then(o => {setDot(o);});
@@ -135,5 +129,4 @@ export default function Pen(props) {
 Pen.propTypes = {
   objlist: PropTypes.object.isRequired,
   setObjList: PropTypes.func.isRequired,
-  onUpdate: PropTypes.func
 };

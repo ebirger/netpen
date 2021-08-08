@@ -21,8 +21,8 @@ function encodeString(settings, items) {
 
 export function SharedPenLoader() {
   return (
-    <CopyToPersonalPens originalPenType="shared pen">
-      <PenLoader getById={getFromString} />
+    <CopyToPersonalPens>
+      <PenLoader getById={getFromString} originalPenType="shared pen"/>
     </CopyToPersonalPens>
   );
 }

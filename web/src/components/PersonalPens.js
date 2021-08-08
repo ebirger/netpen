@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import YAML from 'yaml';
 import { Redirect } from 'react-router-dom';
-import { Button, Divider, notification } from 'antd'
+import { Button, Divider } from 'antd'
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import PenLoader from './PenLoader.js';
 import PenList from './PenList.js';
@@ -38,25 +38,14 @@ export function CopyToPersonalPens(props) {
     setRedirect(newPersonalPen(title, items));
   }
 
-  function onUpdate() {
-    const orpt = props.originalPenType;
-    notification.open({
-      key: "read_only_notification",
-      message: `Read only ${orpt}`,
-      description: `Your changes are not saved, press 'Copy' to clone the ${orpt}`,
-      placement: "bottomRight"
-    });
-  }
-
   if (redirect)
     return redirect;
 
   const elem = React.Children.only(props.children);
-  return React.cloneElement(elem, {onCopy: onCopy, onUpdate: onUpdate});
+  return React.cloneElement(elem, {onCopy: onCopy});
 }
 
 CopyToPersonalPens.propTypes = {
-  originalPenType: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired
 };
 
