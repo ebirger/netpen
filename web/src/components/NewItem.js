@@ -31,7 +31,7 @@ export default function NewItem(props) {
   }
 
   return (
-    <div style={{ paddingRight: '20px' }}>
+    <div style={{ paddingRight: '20px' }} className="new-item">
       <Button block type="dashed" icon={<PlusOutlined />}
         onClick={handleClickOpen}
         style={{ marginLeft: 20 }} />

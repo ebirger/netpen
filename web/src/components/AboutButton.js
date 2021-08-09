@@ -1,8 +1,10 @@
 import React from 'react'
-import { Button, Modal, Alert, Row, Col } from 'antd';
+import PropTypes from 'prop-types';
+import { Button, Modal, Alert, Row, Col, Divider } from 'antd';
 import netpen_light from '../netpen_light.png';
+import { PenTourReset } from './PenTour.js';
 
-export default function AboutButton() {
+export default function AboutButton(props) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -11,6 +13,11 @@ export default function AboutButton() {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const restartTour = () => {
+    setOpen(false);
+    PenTourReset();
   };
 
   return (
@@ -37,6 +44,13 @@ export default function AboutButton() {
               https://github.com/ebirger/netpen.git
             </a>
           </Col>
+          {props.showRestartTour ?
+            <>
+              <Divider />
+              <Button onClick={restartTour}>Restart Tour</Button>
+            </> :
+            []
+          }
           <Col span={24}>
             <Alert type="warning"
               message="This is alpha software. Things may break." />
@@ -46,3 +60,7 @@ export default function AboutButton() {
     </>
   );
 }
+
+AboutButton.propTypes = {
+  showRestartTour: PropTypes.bool,
+};

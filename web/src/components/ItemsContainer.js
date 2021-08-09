@@ -201,11 +201,11 @@ GenItem.propTypes = {
 
 export default function ItemsContainer(props) {
   return (
-    <>
+    <div className="items-container">
       {Object.values(props.itemlist).map((item) => (
         <GenItem key={item.id} item={item} {...props} />
       ))}
-    </>);
+    </div>);
 }
 
 ItemsContainer.propTypes = {

@@ -18,7 +18,8 @@ export default function ToolbarButtons(props) {
   }
 
   const copyButton = props.onCopy ? (
-    <Button type="primary" icon={<CopyOutlined />} onClick={onCopy}>
+    <Button type="primary" icon={<CopyOutlined />} onClick={onCopy}
+      id="copybutton">
       Copy
     </Button>) : <span />;
   return (
@@ -27,7 +28,7 @@ export default function ToolbarButtons(props) {
       <Share settings={props.settings} items={props.objlist} />
       <Settings onChange={props.onSettingsChange} settings={props.settings} />
       <DownloadButton type="primary" getData={getData} />
-      <AboutButton />
+      <AboutButton showRestartTour={true} />
     </Space>);
 }
 
