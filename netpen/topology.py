@@ -65,7 +65,7 @@ class Topology():
             for b in self.builders:
                 insts = [i[b.REF] for i in doc.get('items', []) if b.REF in i]
                 for params in insts:
-                    name = params['name']
+                    name = '%s.%s' % (b.REF, params['name'])
                     if name in done_items:
                         continue
                     jsonschema.validate(params, b.SCHEMA)
