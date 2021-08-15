@@ -1,5 +1,8 @@
 # Netpen
 
+[![System Tests](https://github.com/ebirger/netpen/actions/workflows/system-tests.yml/badge.svg)](https://github.com/ebirger/netpen/actions/workflows/system-tests.yml)
+[![Validation Tests](https://github.com/ebirger/netpen/actions/workflows/validation-tests.yml/badge.svg)](https://github.com/ebirger/netpen/actions/workflows/validation-tests.yml)
+
 Visual editor and API for network environments script generation
 
 Creating network environment scripts for new feature testing
