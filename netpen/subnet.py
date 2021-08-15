@@ -17,7 +17,7 @@ class Subnet(TopologyMember):
 
     def __init__(self, topology, name, cidr):
         super().__init__(topology, name)
-        self.net = ipaddress.ip_network(cidr)
+        self.net = ipaddress.ip_network(cidr, strict=False)
         self.topology.ipam.add_subnet(self)
 
     @property
