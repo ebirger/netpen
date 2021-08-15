@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import { Button, Modal, Alert, Row, Col, Divider } from 'antd';
+import GitHubButton from 'react-github-btn';
 import netpen_light from '../netpen_light.png';
 import { PenTourReset } from './PenTour.js';
 
@@ -43,6 +44,20 @@ export default function AboutButton(props) {
               rel="noreferrer">
               https://github.com/ebirger/netpen.git
             </a>
+          </Col>
+          <Col>
+            <GitHubButton href="https://github.com/ebirger/netpen/issues"
+              data-icon="octicon-issue-opened"
+              aria-label="Issue ebirger/netpen on GitHub">
+              Issue
+            </GitHubButton>
+          </Col>
+          <Col>
+            <GitHubButton href="https://github.com/ebirger/netpen"
+              data-icon="octicon-star"
+              aria-label="Star ebirger/netpen on GitHub">
+              Star
+            </GitHubButton>
           </Col>
           {props.showRestartTour ?
             <>
