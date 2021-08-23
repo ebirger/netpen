@@ -7,13 +7,14 @@ import { createCIDR } from 'ip6addr';
 import Field from './Field.js';
 
 export default function Cidr(props) {
+  const [value, setValue] = useState(props.value);
   const [err, setErr] = useState(false);
   const suffix = err ? <ExclamationOutlined /> : <CheckOutlined />;
 
   function onCidrChange(ev) {
     const cidr = ev.target.value;
 
-    props.onChange(cidr);
+    setValue(cidr);
     let invalid = false;
     try {
       createCIDR(cidr.toString());
@@ -21,11 +22,14 @@ export default function Cidr(props) {
       invalid = true;
     }
     setErr(invalid);
+
+    if (!invalid)
+      props.onChange(cidr);
   }
 
   return (
     <Field title="CIDR">
-      <Input onChange={onCidrChange} value={props.value} suffix={suffix} />
+      <Input onChange={onCidrChange} value={value} suffix={suffix} />
     </Field>
   );
 }
