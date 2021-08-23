@@ -1,6 +1,7 @@
 import React from 'react';
 import { useContext } from 'react'
 import PropTypes from 'prop-types';
+import { Radio } from 'antd';
 import Context from '../Context.js'
 import SubnetModel from '../models/SubnetModel.js'
 import Cidr from './Cidr.js'
@@ -19,8 +20,10 @@ SubnetList.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
+const CIDRS = ["198.51.100.0/24", "10.0.0.0/24", "192.168.1.0/24"];
+
 export default function Subnet(props) {
-  const cidr = props.item.cidr || '';
+  const cidr = props.item.cidr || CIDRS[0];
   const {id, name, type} = props.item;
 
   function setCidr(newCidr) {
@@ -28,8 +31,22 @@ export default function Subnet(props) {
     props.onChange(model);
   }
 
+  function onValueChange(e) {
+    const v = e.target.value;
+    setCidr(v);
+  }
+
+  const isCustom = !CIDRS.includes(cidr);
+
   return (
-    <Cidr key="col" value={cidr} onChange={setCidr} />
+    <Radio.Group onChange={onValueChange} value={cidr}>
+      {CIDRS.map((c)=>(<Radio.Button key={c} value={c}>{c}</Radio.Button>))}
+      <Radio.Button value={isCustom ? cidr : "172.16.0.0/24"}>
+        Custom...
+        {isCustom ? <Cidr key="cidr" value={cidr}
+          onChange={setCidr} /> : null}
+      </Radio.Button>
+    </Radio.Group>
   );
 }
 

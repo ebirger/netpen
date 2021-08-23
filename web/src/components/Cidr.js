@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { Input } from 'antd';
 import { CheckOutlined, ExclamationOutlined } from '@ant-design/icons';
 import { createCIDR } from 'ip6addr';
-import Field from './Field.js';
 
 export default function Cidr(props) {
   const [value, setValue] = useState(props.value);
@@ -28,9 +27,7 @@ export default function Cidr(props) {
   }
 
   return (
-    <Field title="CIDR">
-      <Input onChange={onCidrChange} value={value} suffix={suffix} />
-    </Field>
+    <Input onChange={onCidrChange} value={value} suffix={suffix} />
   );
 }
 
