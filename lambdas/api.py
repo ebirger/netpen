@@ -52,6 +52,7 @@ def render(fmt, event):
     elif fmt == 'bash':
         t.render_bash()
     print(t.printfn.o)
+    sys.stdout.flush()
     return output(200, t.printfn.o)
 
 
