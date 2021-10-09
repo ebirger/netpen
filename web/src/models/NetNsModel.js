@@ -3,6 +3,10 @@ import {ObjModel} from './ObjModel.js'
 export default class NetNsModel extends ObjModel {
   constructor(id, name, type, netserver, forwarding, enableLo) {
     super(id, name, type, true);
+    this.desc = `
+Network namespaces are isolated copies of the network stack, each with its
+own set of network interfaces, routes, firewall rules, etc.
+`;
     this.netserver = netserver;
     if (forwarding === undefined)
       this.forwarding = true;

@@ -5,6 +5,9 @@ import NetDevModel from './NetDevModel.js';
 export default class VlanModel extends NetDevModel {
   constructor(id, name, type, link, tag, devparams) {
     super(id, name, type, devparams);
+    this.desc = `
+VLAN devices implement 802.1q tagging
+`;
     this.link = link;
     this.tag = tag;
   }

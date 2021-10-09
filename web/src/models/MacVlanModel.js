@@ -4,6 +4,10 @@ import NetDevModel from './NetDevModel.js';
 export default class MacVlanModel extends NetDevModel {
   constructor(id, name, type, link, devparams) {
     super(id, name, type, devparams);
+    this.desc = `
+MACVLAN devices allow demultiplexing incoming traffic based on MAC address
+towards different devices which may reside in different namespaces
+`;
     this.link = link;
   }
 

@@ -5,6 +5,10 @@ import MasterDevModel from './MasterDevModel.js';
 export default class TeamModel extends MasterDevModel {
   constructor(id, name, type, ports, mode, devparams) {
     super(id, name, type, ports, devparams);
+    this.desc = `
+Team devices group multiple Ethernet devices such that traffic may be sent
+to different devices based on different policies
+`;
     this.mode = mode;
   }
 

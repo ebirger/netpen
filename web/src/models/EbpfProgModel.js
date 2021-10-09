@@ -14,6 +14,11 @@ int dropper(struct xdp_md *ctx) {
 export default class EbpfProgModel extends ObjModel {
   constructor(id, name, type, code) {
     super(id, name, type);
+    this.desc = `
+eBPF programs allow injecting custom kernel functionality at different
+hooking points.
+Currently XDP attachment is supported
+`;
     this.code = code || defaultCode;
   }
 

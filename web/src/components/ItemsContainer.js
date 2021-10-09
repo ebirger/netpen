@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Button, Collapse, Typography, Space } from 'antd';
 import { Popover, Input } from 'antd';
 import { DeleteOutlined, AimOutlined, EditOutlined } from '@ant-design/icons';
+import { InfoOutlined } from '@ant-design/icons';
 import { GetTypeName } from '../Types.js';
 import NetNs from './NetNs.js';
 import Veth from './Veth.js';
@@ -116,6 +117,23 @@ ItemNameEditButton.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
+function ItemInfoButton(props) {
+  const [infoVisible, setInfoVisible] = useState(false);
+
+  return (
+    <div onClick={e => { e.stopPropagation(); }}>
+      <Popover content={props.item.desc} trigger="click" visible={infoVisible}
+        onVisibleChange={setInfoVisible}>
+        <Button icon={<InfoOutlined />} />
+      </Popover>
+    </div>
+  );
+}
+
+ItemInfoButton.propTypes = {
+  item: PropTypes.object.isRequired,
+};
+
 function ItemContainer(props) {
   const key = `${props.item.type}.${props.item.name}`;
 
@@ -143,6 +161,7 @@ function ItemContainer(props) {
 
   const Actions = (
     <div className="right">
+      {props.item.desc ? <ItemInfoButton item={props.item} /> : ""}
       <ItemNameEditButton item={props.item} onChange={props.onChange} />
       <Button icon={<DeleteOutlined />} onClick={onDelete} />
     </div>

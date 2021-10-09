@@ -4,6 +4,11 @@ import NetDevParamsModel from './NetDevParamsModel.js';
 export default class VethModel extends ObjModel {
   constructor(id, name, type, devparams1, devparams2) {
     super(id, name, type);
+    this.desc = `
+Veth devices are pairs of virtual Ethernet devices. Traffic sent to one device
+is received on the other and vice-versa.
+Each device can reside in a different network namespace
+`;
     const [bp1, bp2] = VethModel.baseDevParams(this);
     this.devparams1 = devparams1 || bp1;
     this.devparams2 = devparams2 || bp2;

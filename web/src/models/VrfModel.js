@@ -5,6 +5,10 @@ import MasterDevModel from './MasterDevModel.js';
 export default class VrfModel extends MasterDevModel {
   constructor(id, name, type, ports, default_unreach, devparams) {
     super(id, name, type, ports, devparams);
+    this.desc = `
+VRFs allow creating different layer 3 routing domains within a single
+network namespace
+`;
     this.portsAttr = 'members';
     if (default_unreach === undefined)
       this.default_unreach = true;

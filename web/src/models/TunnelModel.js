@@ -48,6 +48,9 @@ export default class TunnelModel extends ObjModel {
   constructor(id, name, type, mode, subnets, link1, link2, dev1Mode, dev2Mode,
     getItemById) {
     super(id, name, type);
+    this.desc = `
+Tunnel devices implement virtual networks on top of other networks
+`;
     this.mode = mode;
     this.subnets = subnets;
     this.link1 = link1;

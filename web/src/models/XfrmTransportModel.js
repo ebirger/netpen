@@ -3,6 +3,9 @@ import { ObjModel } from './ObjModel.js';
 export default class XfrmTransportModel extends ObjModel {
   constructor(id, name, type, link1, link2) {
     super(id, name, type, true);
+    this.desc = `
+XFRM transport encrypts traffic flowing between different network devices
+`;
     this.link1 = link1;
     this.link2 = link2;
   }
