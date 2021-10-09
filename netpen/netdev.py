@@ -77,9 +77,9 @@ class NetDev():
 
     @property
     def dotname(self):
-        return '"netdev_%s_%s-%s_%s"' % (self.ns.name,
-                                         self.name.replace('.', '_'),
-                                         self.owner.REF, self.owner.name)
+        name_ = self.name.replace('.', '_')
+        ns_name = self.ns.name
+        return f'"netdev_{ns_name}_{name_}-{self.owner.REF}_{self.owner.name}"'
 
     @property
     def main_addr(self):
@@ -91,41 +91,40 @@ class NetDev():
         self.addr_pools[addr] = pool
 
     def render_dot(self):
-        label = '%s' % self.name
+        label = f'{self.name}'
         if self.mtu:
-            label += '|mtu=%s' % self.mtu
+            label += f'|mtu={self.mtu}'
         if self.addrs:
-            label += '|%s' % '|'.join(self.addrs)
-        self.p('%s [label="{%s}", shape=record]' % (self.dotname, label))
+            addrs_str = '|'.join(self.addrs)
+            label += f'|{addrs_str}'
+        self.p(f'{self.dotname} [label="{{{label}}}", shape=record]')
         if self.xdp:
             xdp = self.topology.members.get(self.xdp)
             if xdp:
-                self.p('%s -- %s [label="XDP", style=dashed]' % (xdp.dotname,
-                                                                 self.dotname))
+                self.p(f'{xdp.dotname} -- {self.dotname} '
+                       f'[label="XDP", style=dashed]')
 
     def render_bash_set_state(self, state):
-        self.p('ip -net %s link set %s %s' % (self.ns.name, self.name, state))
+        self.p(f'ip -net {self.ns.name} link set {self.name} {state}')
 
     def render_bash(self):
+        ns_name = self.ns.name
+        name = self.name
+
         self.render_bash_set_state('up')
         if self.mtu:
-            self.p('ip -net %s link set %s mtu %s' % (self.ns.name, self.name,
-                                                      self.mtu))
+            self.p(f'ip -net {ns_name} link set {name} mtu {self.mtu}')
         for a in self.addrs:
             dad = ' nodad' if net_family(a) == socket.AF_INET6 else ''
-            self.p('ip %s -net %s addr add %s dev %s%s' % (_flag6(a),
-                                                           self.ns.name,
-                                                           a, self.name, dad))
+            self.p(f'ip {_flag6(a)} -net {ns_name} addr add {a} dev {name}{dad}')
         for k, v in self.ethtool.items():
             val = 'on' if v else 'off'
-            self.p('ip netns exec %s ethtool -K %s %s %s' % (self.ns.name,
-                                                             self.name, k,
-                                                             val))
+            self.p(f'ip netns exec {ns_name} ethtool -K {name} {k} {val}')
         if self.xdp:
             xdp = self.topology.members.get(self.xdp)
             if xdp:
                 prog_var = xdp.bash_ebpf_var
-                self.p('ip -net %s link set %s xdp object "$%s"' % (
-                    self.ns.name, self.name, prog_var))
+                self.p(f'ip -net {ns_name} link set {name} '
+                       f'xdp object "${prog_var}"')
 
         self.topology.done_list.add(self)
