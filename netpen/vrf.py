@@ -26,8 +26,8 @@ class Vrf(TopologyMember):
         self._default_unreach = default_unreach
         self._vrf_id = ns.add_vrf(self)
         self.dev.vrf = self
-        key = '%s.%s' % (self.REF, self.name)
-        self.topology.members['%s.dev' % key] = self.dev
+        key = f'{self.REF}.{self.name}'
+        self.topology.members[f'{key}.dev'] = self.dev
         for p in self.dev.ports:
             self.topology.add_prereq(self, p)
             p.vrf = self
@@ -43,28 +43,26 @@ class Vrf(TopologyMember):
                    dev_args)
 
     def render_dot(self):
-        self.p('subgraph cluster_vrf_%s {' % self.name)
-        self.p('label="%s [%s]"' % (self.name, self._vrf_id))
+        self.p(f'subgraph cluster_vrf_{self.name} {{')
+        self.p(f'label="{self.name} [{self._vrf_id}]"')
         self.p('style=dashed')
-        self.p('%s;' % self.dev.dotname)
+        self.p(f'{self.dev.dotname};')
         for p in self.dev.ports:
-            self.p('%s;' % p.dotname)
+            self.p(f'{p.dotname};')
         self.p('}')
         self.topology.done_list.add(self)
 
     def render_bash(self):
-        self.p('ip -net %s link add %s type %s table %s' % (self.dev.ns.name,
-                                                            self.dev.name,
-                                                            self.REF,
-                                                            self._vrf_id))
+        ns_name = self.dev.ns.name
+        self.p(f'ip -net {ns_name} link add {self.dev.name} '
+               f'type {self.REF} table {self._vrf_id}')
 
         if self._default_unreach:
-            self.p('ip -net %s route add vrf %s unreachable default metric '
-                   '4278198272' % (self.dev.ns.name, self.name))
+            self.p(f'ip -net {ns_name} route add vrf {self.name} unreachable '
+                   f'default metric 4278198272')
 
         self.dev.render_bash()
 
         for p in self.dev.ports:
-            self.p('ip -net %s link set %s master %s' % (self.dev.ns.name,
-                                                         p.name,
-                                                         self.dev.name))
+            self.p(f'ip -net {ns_name} link set {p.name} '
+                   f'master {self.dev.name}')
