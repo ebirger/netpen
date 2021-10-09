@@ -22,7 +22,7 @@ class TopologyMember():
         topology.objects[self.__class__.REF].append(self)
         self.name = name
         if name:
-            key = '%s.%s' % (self.REF, self.name)
+            key = f'{self.REF}.{self.name}'
             topology.members[key] = self
 
     def p(self, *args, **kwargs):
@@ -65,7 +65,7 @@ class Topology():
             for b in self.builders:
                 insts = [i[b.REF] for i in doc.get('items', []) if b.REF in i]
                 for params in insts:
-                    name = '%s.%s' % (b.REF, params['name'])
+                    name = f'{b.REF}.{params["name"]}'
                     if name in done_items:
                         continue
                     jsonschema.validate(params, b.SCHEMA)
@@ -94,7 +94,7 @@ class Topology():
     def render_bash(self):
         fail_on_err = ' -e' if self.settings.get('fail_on_error', True) else ''
         verbose = ' -x' if self.settings.get('verbose', False) else ''
-        self.printfn('#!/bin/bash%s%s\n' % (fail_on_err, verbose))
+        self.printfn(f'#!/bin/bash{fail_on_err}{verbose}\n')
 
         title = self.settings.get('title') or 'netpen'
         self.printfn('cat << "EOF"')
@@ -126,7 +126,7 @@ class Topology():
                         missing = True
                         continue
                     if not printed_header:
-                        self.printfn('\n# %s' % cls.REF)
+                        self.printfn(f'\n# {cls.REF}')
                         printed_header = True
                     o.render_bash()
                     self.done_list.add(o)
@@ -142,8 +142,8 @@ class Topology():
         for cls in self.builders:
             subgraph = getattr(cls, 'SUBGRAPH', False)
             if subgraph:
-                self.printfn('subgraph cluster_%s {' % cls.REF)
-                self.printfn('label="%s"' % subgraph)
+                self.printfn(f'subgraph cluster_{cls.REF} {{')
+                self.printfn(f'label="{subgraph}"')
             for o in self.objects[cls.REF]:
                 if o in self.done_list:
                     continue

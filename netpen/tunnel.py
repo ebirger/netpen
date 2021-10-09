@@ -32,19 +32,19 @@ class Tunnel(TopologyMember):
     def __init__(self, topology, name, subnets, link1_dev, link2_dev,
                  _dev1=None, _dev2=None):
         super().__init__(topology, name)
-        self.dev1 = NetDev(topology=topology, name='%s.dev1' % name,
+        self.dev1 = NetDev(topology=topology, name=f'{name}.dev1',
                            owner=self, subnets=subnets, ns=link1_dev.ns,
                            noarp=self.NOARP)
-        self.dev2 = NetDev(topology=topology, name='%s.dev2' % name,
+        self.dev2 = NetDev(topology=topology, name=f'{name}.dev2',
                            owner=self, subnets=subnets, ns=link2_dev.ns,
                            noarp=self.NOARP)
         self.dev1.tss[self.dev2] = subnets
         self.dev2.tss[self.dev1] = subnets
         self.link1 = link1_dev
         self.link2 = link2_dev
-        key = '%s.%s' % (self.REF, self.name)
-        self.topology.members['%s.dev1' % key] = self.dev1
-        self.topology.members['%s.dev2' % key] = self.dev2
+        key = f'{self.REF}.{self.name}'
+        self.topology.members[f'{key}.dev1'] = self.dev1
+        self.topology.members[f'{key}.dev2'] = self.dev2
         self.topology.add_l2_dev(self.dev1)
         self.topology.add_l2_dev(self.dev2)
         self.topology.add_prereq(self, self.link1)
@@ -77,15 +77,11 @@ class Tunnel(TopologyMember):
                     dev2)
 
     def render_dot(self):
-        self.p('%s -- %s [color="red"]' % (self.dev1.dotname,
-                                           self.link1.dotname))
-        self.p('%s -- %s [color="red"]' % (self.dev2.dotname,
-                                           self.link2.dotname))
-        self.p('%s -- %s [color="red"]' % (self.link1.dotname,
-                                           self.link2.dotname))
-        self.p('%s -- %s [color="green", label="%s"]' % (self.dev1.dotname,
-                                                         self.dev2.dotname,
-                                                         self.TUNNEL_MODE))
+        self.p(f'{self.dev1.dotname} -- {self.link1.dotname} [color="red"]')
+        self.p(f'{self.dev2.dotname} -- {self.link2.dotname} [color="red"]')
+        self.p(f'{self.link1.dotname} -- {self.link2.dotname} [color="red"]')
+        self.p(f'{self.dev1.dotname} -- {self.dev2.dotname} '
+               f'[color="green", label="{self.TUNNEL_MODE}"]')
 
 
 class IpIp(Tunnel):
@@ -93,18 +89,14 @@ class IpIp(Tunnel):
     DESC = {'title': 'IPIP based tunnel'}
 
     def render_bash(self):
-        self.p('ip -net %s link add %s type %s '
-               'remote %s local %s' % (self.dev1.ns.name, self.dev1.name,
-                                       self.TUNNEL_MODE,
-                                       self.link2.main_addr,
-                                       self.link1.main_addr))
+        self.p(f'ip -net {self.dev1.ns.name} link add {self.dev1.name} '
+               f'type {self.TUNNEL_MODE} remote {self.link2.main_addr} '
+               f'local {self.link1.main_addr}')
         self.dev1.render_bash()
 
-        self.p('ip -net %s link add %s type %s '
-               'remote %s local %s' % (self.dev2.ns.name, self.dev2.name,
-                                       self.TUNNEL_MODE,
-                                       self.link1.main_addr,
-                                       self.link2.main_addr))
+        self.p(f'ip -net {self.dev2.ns.name} link add {self.dev2.name} '
+               f'type {self.TUNNEL_MODE} remote {self.link1.main_addr} '
+               f'local {self.link2.main_addr}')
         self.dev2.render_bash()
 
 
@@ -132,20 +124,16 @@ class VxLan(Tunnel):
 
     def render_bash(self):
         vni = self._alloc_vni()
-        self.p('ip -net %s link add %s type %s '
-               'id %s remote %s local %s dstport 0' % (self.dev1.ns.name,
-                                                       self.dev1.name,
-                                                       self.TUNNEL_MODE, vni,
-                                                       self.link2.main_addr,
-                                                       self.link1.main_addr))
+        self.p(f'ip -net {self.dev1.ns.name} link add {self.dev1.name} '
+               f'type {self.TUNNEL_MODE} id {vni} '
+               f'remote {self.link2.main_addr} local {self.link1.main_addr} '
+               f'dstport 0')
         self.dev1.render_bash()
 
-        self.p('ip -net %s link add %s type %s '
-               'id %s remote %s local %s dstport 0' % (self.dev2.ns.name,
-                                                       self.dev2.name,
-                                                       self.TUNNEL_MODE, vni,
-                                                       self.link1.main_addr,
-                                                       self.link2.main_addr))
+        self.p(f'ip -net {self.dev2.ns.name} link add {self.dev2.name} '
+               f'type {self.TUNNEL_MODE} id {vni} '
+               f'remote {self.link1.main_addr} local {self.link2.main_addr} '
+               f'dstport 0')
         self.dev2.render_bash()
 
 
@@ -162,22 +150,14 @@ class Gre(Tunnel):
 
     def render_bash(self):
         key = self._alloc_key()
-        self.p('ip -net %s link add %s type %s '
-               'remote %s local %s key %s' % (self.dev1.ns.name,
-                                              self.dev1.name,
-                                              self.TUNNEL_MODE,
-                                              self.link2.main_addr,
-                                              self.link1.main_addr,
-                                              key))
+        self.p(f'ip -net {self.dev1.ns.name} link add {self.dev1.name} '
+               f'type {self.TUNNEL_MODE} remote {self.link2.main_addr} '
+               f'local {self.link1.main_addr} key {key}')
         self.dev1.render_bash()
 
-        self.p('ip -net %s link add %s type %s '
-               'remote %s local %s key %s' % (self.dev2.ns.name,
-                                              self.dev2.name,
-                                              self.TUNNEL_MODE,
-                                              self.link1.main_addr,
-                                              self.link2.main_addr,
-                                              key))
+        self.p(f'ip -net {self.dev2.ns.name} link add {self.dev2.name} '
+               f'type {self.TUNNEL_MODE} remote {self.link1.main_addr} '
+               f'local {self.link2.main_addr} key {key}')
         self.dev2.render_bash()
 
 
@@ -193,8 +173,7 @@ class Wireguard(Tunnel):
         self.addrs = [s.cidr for s in subnets]
 
     def _render_bash_add_dev(self, ns, dev):
-        self.p('ip -net "%s" link add "%s" type wireguard' % (ns.name,
-                                                              dev.name))
+        self.p(f'ip -net {ns.name} link add {dev.name} type wireguard')
 
     def _render_bash_wg_keys(self):
         self.p('u=$(umask)')
@@ -211,11 +190,11 @@ class Wireguard(Tunnel):
         allowed_ips = ','.join(self.addrs)
         priv_key, _ = keys_local
         _, pub_key = keys_remote
-        self.p('''
-ip netns exec %s wg set "%s" listen-port %s \\
-    private-key "%s" peer "$(cat \"%s\")" allowed-ips %s \\
-    endpoint %s:%s''' % (ns.name, dev.name, local_port, priv_key, pub_key,
-                         allowed_ips, peer, remote_port))
+        self.p(f'''
+ip netns exec {ns.name} wg set "{dev.name}" listen-port {local_port} \\
+    private-key "{priv_key}" peer "$(cat \"{pub_key}\")" \\
+    allowed-ips {allowed_ips} \\
+    endpoint {peer}:{remote_port}''')
 
     def render_bash(self):
         Tunnel.render_bash(self)
@@ -288,16 +267,14 @@ class XfrmTunnel(Xfrm, Tunnel):
         return ret
 
     def _render_xfrmi_bash(self, dev, link, xparams):
-        self.p('ip -net "%s" link add "%s" type xfrm if_id %s' %
-               (link.ns.name, dev.name, xparams.if_id))
+        self.p(f'ip -net {link.ns.name} link add {dev.name} type xfrm '
+               f'if_id {xparams.if_id}')
 
     def _render_vti_bash(self, mode, dev, local_link, remote_link, xparams):
-        p = 'remote %s local %s key %s dev %s' % (remote_link.main_addr,
-                                                  local_link.main_addr,
-                                                  xparams.mark,
-                                                  local_link.name)
-        self.p('ip -net "%s" link add "%s" type %s %s' %
-               (local_link.ns.name, dev.name, mode, p))
+        p = f'remote {remote_link.main_addr} local {local_link.main_addr} ' \
+            f'key {xparams.mark} dev {local_link.name}'
+        self.p(f'ip -net {local_link.ns.name} link add {dev.name} '
+               f'type {mode} {p}')
 
     def _render_dev_bash(self, mode, dev, local_link, remote_link, xparams):
         if mode == 'xfrm':
