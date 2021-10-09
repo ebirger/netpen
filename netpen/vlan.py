@@ -19,14 +19,14 @@ class Vlan(TopologyMember):
 
     def __init__(self, topology, name, ns, tag, link_dev, dev_args=None):
         super().__init__(topology, name)
-        devname = '%s.%s' % (link_dev.name, tag)
+        devname = f'{link_dev.name}.{tag}'
         dev_args = dev_args or {}
         self.tag = tag
         self.link = link_dev
         self.dev = NetDev(topology=topology, name=devname, owner=self, ns=ns,
                           link=self.link, **dev_args)
-        key = '%s.%s' % (self.REF, self.name)
-        self.topology.members['%s.dev' % key] = self.dev
+        key = f'{self.REF}.{self.name}'
+        self.topology.members[f'{key}.dev'] = self.dev
         self.topology.add_l2_dev(self.dev, vlan_tag=self.tag)
         self.topology.add_prereq(self, self.link)
 
@@ -40,15 +40,13 @@ class Vlan(TopologyMember):
                    dev_args=dev_args)
 
     def render_bash(self):
-        self.p('ip -net %s link add %s link %s '
-               'type vlan id %s' % (self.link.ns.name, self.dev.name,
-                                    self.link.name, self.tag))
-        self.p('ip -net %s link set %s netns %s' % (self.link.ns.name,
-                                                    self.dev.name,
-                                                    self.dev.ns.name))
+        link_ns_name = self.link.ns.name
+        self.p(f'ip -net {link_ns_name} link add {self.dev.name} '
+               f'link {self.link.name} type vlan id {self.tag}')
+        self.p(f'ip -net {link_ns_name} link set {self.dev.name} '
+               f'netns {self.dev.ns.name}')
         self.dev.render_bash()
 
     def render_dot(self):
-        self.p('%s -- %s [color="blue", label="%s"]' % (self.dev.dotname,
-                                                        self.link.dotname,
-                                                        'VLAN %s' % self.tag))
+        self.p(f'{self.dev.dotname} -- {self.link.dotname} '
+               f'[color="blue", label="VLAN {self.tag}"]')
