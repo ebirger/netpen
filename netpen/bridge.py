@@ -21,8 +21,8 @@ class Bridge(TopologyMember):
         dev_args = dev_args or {}
         self.dev = NetDev(topology=topology, name=name, owner=self, ns=ns,
                           ports=ports, **dev_args)
-        key = '%s.%s' % (self.REF, self.name)
-        self.topology.members['%s.dev' % key] = self.dev
+        key = f'{self.REF}.{self.name}'
+        self.topology.members[f'{key}.dev'] = self.dev
         for p in self.dev.ports:
             p.master = self
             self.topology.add_l2_conn(self.dev, p)
@@ -38,16 +38,13 @@ class Bridge(TopologyMember):
 
     def render_dot(self):
         for p in self.dev.ports:
-            self.p('%s -- %s [color="blue"]' % (self.dev.dotname,
-                                                p.dotname))
+            self.p(f'{self.dev.dotname} -- {p.dotname} [color="blue"]')
 
     def render_bash(self):
-        self.p('ip -net %s link add %s type %s ' % (self.dev.ns.name,
-                                                    self.dev.name,
-                                                    self.REF))
+        self.p(f'ip -net {self.dev.ns.name} link add {self.dev.name} '
+               f'type {self.REF} ')
         self.dev.render_bash()
 
         for p in self.dev.ports:
-            self.p('ip -net %s link set %s master %s' % (self.dev.ns.name,
-                                                         p.name,
-                                                         self.dev.name))
+            self.p(f'ip -net {self.dev.ns.name} link set {p.name} master '
+                   f'{self.dev.name}')
