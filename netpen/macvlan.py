@@ -23,8 +23,8 @@ class MacVlan(TopologyMember):
         self.link = link_dev
         self.dev = NetDev(topology=topology, name=devname, owner=self, ns=ns,
                           link=self.link, **dev_args)
-        key = '%s.%s' % (self.REF, self.name)
-        self.topology.members['%s.dev' % key] = self.dev
+        key = f'{self.REF}.{self.name}'
+        self.topology.members[f'{key}.dev'] = self.dev
         self.topology.add_l2_conn(self.dev, self.link)
         self.topology.add_prereq(self, self.link)
 
@@ -37,16 +37,12 @@ class MacVlan(TopologyMember):
         return cls(topology, params['name'], ns, link, dev_args=dev_args)
 
     def render_bash(self):
-        self.p('ip -net %s link add %s link %s '
-               'type macvlan mode bridge' % (self.link.ns.name,
-                                             self.dev.name,
-                                             self.link.name))
-        self.p('ip -net %s link set %s netns %s' % (self.link.ns.name,
-                                                    self.dev.name,
-                                                    self.dev.ns.name))
+        self.p(f'ip -net {self.link.ns.name} link add {self.dev.name} '
+               f'link {self.link.name} type macvlan mode bridge')
+        self.p(f'ip -net {self.link.ns.name} link set {self.dev.name} '
+               f'netns {self.dev.ns.name}')
         self.dev.render_bash()
 
     def render_dot(self):
-        self.p('%s -- %s [color="blue", label="%s"]' % (self.dev.dotname,
-                                                        self.link.dotname,
-                                                        'MACVLAN'))
+        self.p(f'{self.dev.dotname} -- {self.link.dotname} '
+               f'[color="blue", label="MACVLAN"]')
