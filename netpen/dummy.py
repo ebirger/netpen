@@ -20,8 +20,8 @@ class Dummy(TopologyMember):
         dev_args = dev_args or {}
         self.dev = NetDev(topology=topology, name=self.name, owner=self, ns=ns,
                           **dev_args)
-        key = '%s.%s' % (self.REF, self.name)
-        self.topology.members['%s.dev' % key] = self.dev
+        key = f'{self.REF}.{self.name}'
+        self.topology.members[f'{key}.dev'] = self.dev
         self.topology.add_l2_dev(self.dev)
 
     @classmethod
@@ -32,6 +32,6 @@ class Dummy(TopologyMember):
         return cls(topology, params['name'], ns, dev_args=dev_args)
 
     def render_bash(self):
-        self.p('ip -net %s link add %s type dummy' % (self.dev.ns.name,
-                                                      self.dev.name))
+        self.p(f'ip -net {self.dev.ns.name} link add {self.dev.name} '
+               f'type dummy')
         self.dev.render_bash()
