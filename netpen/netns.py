@@ -58,33 +58,33 @@ class NetNs(TopologyMember):
 
     def _render_bash_move_local_iprule_pref(self):
         for v6flag in ('', '-6'):
-            self.p('ip %s -net %s rule del pref 0' % (v6flag, self.name))
-            self.p('ip %s -net %s rule add pref 32765 from all lookup local' %
-                   (v6flag, self.name))
+            self.p(f'ip {v6flag} -net {self.name} rule del pref 0')
+            self.p(f'ip {v6flag} -net {self.name} rule add pref 32765 '
+                   f'from all lookup local')
 
     def render_bash(self):
-        self.p('ip netns add %s' % self.name)
+        self.p(f'ip netns add {self.name}')
         sysctls = []
         if self.forwarding:
             sysctls += self.forwarding_sysctls
         for sc in sysctls:
-            self.p('ip netns exec %s sysctl -w %s' % (self.name, sc))
+            self.p(f'ip netns exec {self.name} sysctl -w {sc}')
         if self.netserver:
-            self.p('ip netns exec %s netserver' % self.name)
+            self.p(f'ip netns exec {self.name} netserver')
         if self.enable_lo:
-            self.p('ip -net %s link set lo up' % self.name)
+            self.p(f'ip -net {self.name} link set lo up')
         if self._vrfs:
             self._render_bash_move_local_iprule_pref()
 
     def render_dot(self):
         if not self._vrfs and not self._devs:
             name_no_dot = self.name.replace('.', '_')
-            dotname = '"netns_%s-netns_%s"' % (name_no_dot, name_no_dot)
-            self.p('%s [label="%s", shape=record]' % (dotname, self.name))
+            dotname = f'"netns_{name_no_dot}-netns_{name_no_dot}"'
+            self.p(f'{dotname} [label="{self.name}", shape=record]')
             return
 
-        self.p('subgraph cluster_netns_%s {' % self.name)
-        self.p('label="%s"' % self.name)
+        self.p(f'subgraph cluster_netns_{self.name} {{')
+        self.p(f'label="{self.name}"')
 
         for o in self._vrfs:
             o.render_dot()
@@ -114,6 +114,6 @@ class NetNs(TopologyMember):
     def render_table_row(self):
         def _render_dev(d):
             if d.addrs:
-                return '\n'.join(('%s (%s)' % (a, d.name) for a in d.addrs))
+                return '\n'.join((f'{a} ({d.name})' for a in d.addrs))
             return d.name
         return [self.name, '\n'.join(_render_dev(d) for d in self._devs)]
