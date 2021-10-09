@@ -25,12 +25,12 @@ class Xfrm():
 
     def _render_bash_xfrm_state(self, ns, src, dst, spi, if_id=None):
         params = dict(ns=ns, src=src, dst=dst, spi=spi, mode=self.MODE)
-        params['if_id'] = 'if_id %s' % if_id if if_id else ''
+        params['if_id'] = f'if_id {if_id}' if if_id else ''
         params['key_aead'] = self._key
         if self.MODE == 'tunnel':
             params['sel'] = 'flag af-unspec'
         else:
-            params['sel'] = 'sel src "%s" dst "%s"' % (src, dst)
+            params['sel'] = f'sel src "{src}" dst "{dst}"'
         self.p('''
 ip -net "%(ns)s" xfrm state add src "%(src)s" dst "%(dst)s" \\
     spi "%(spi)s" proto esp aead 'rfc4106(gcm(aes))' \\
@@ -42,9 +42,9 @@ ip -net "%(ns)s" xfrm state add src "%(src)s" dst "%(dst)s" \\
         params = dict(ns=ns, direc=direc, src=src, dst=dst, tmpl_src=tmpl_src,
                       tmpl_dst=tmpl_dst, mode=self.MODE)
         if if_id:
-            params['disc'] = 'if_id %s' % if_id
+            params['disc'] = f'if_id {if_id}'
         elif mark:
-            params['disc'] = 'mark %s' % mark
+            params['disc'] = f'mark {mark}'
         else:
             params['disc'] = ''
         self.p('''
@@ -65,13 +65,14 @@ ip -net "%(ns)s" xfrm policy add dir %(direc)s \\
     def _render_bash_xfrm_ns(self, ns, local_ip, remote_ip,
                              overlay_local_addrs, overlay_remote_addrs,
                              spi_out, spi_in, if_id=None, mark=None):
-        label = '%s <-> %s' % (','.join(overlay_local_addrs),
-                               ','.join(overlay_remote_addrs))
+        laddrs_str = ','.join(overlay_local_addrs)
+        raddrs_str = ','.join(overlay_remote_addrs)
+        label = f'{laddrs_str} <-> {raddrs_str}'
 
-        self.p('\n# %s: states %s' % (ns, label))
+        self.p(f'\n# {ns}: states {label}')
         self._render_bash_xfrm_state(ns, local_ip, remote_ip, spi_out, if_id)
         self._render_bash_xfrm_state(ns, remote_ip, local_ip, spi_in, if_id)
-        self.p('\n# %s: policies %s' % (ns, label))
+        self.p(f'\n# {ns}: policies {label}')
         all_tss = product(overlay_local_addrs, overlay_remote_addrs)
         for overlay_local, overlay_remote in all_tss:
             self._render_bash_xfrm_policies(ns, overlay_local, overlay_remote,
@@ -143,5 +144,5 @@ class XfrmTransport(Xfrm, TopologyMember):
         return cls(topology, params['name'], link1, link2)
 
     def render_dot(self):
-        self.p('%s -- %s [color="green", label="xfrm"]' % (self.link1.dotname,
-                                                           self.link2.dotname))
+        self.p(f'{self.link1.dotname} -- {self.link2.dotname} '
+               f'[color="green", label="xfrm"]')
