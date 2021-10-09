@@ -14,7 +14,7 @@ class PrintFn():
         self.o = ''
 
     def __call__(self, s):
-        self.o += '%s\n' % s
+        self.o += f'{s}\n'
 
 
 def output(rc, body, typ='octet-stream'):
@@ -26,7 +26,7 @@ def output(rc, body, typ='octet-stream'):
             'Access-Control-Allow-Headers': '*',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-            "Content-Type": 'application/%s' % typ
+            "Content-Type": f'application/{typ}'
         },
         "body": body
     }
