@@ -21,14 +21,14 @@ class Veth(TopologyMember):
         super().__init__(topology, name)
         dev1_args = dev1_args or {}
         dev2_args = dev2_args or {}
-        self.dev1 = NetDev(topology=topology, name='%s.dev1' % name,
+        self.dev1 = NetDev(topology=topology, name=f'{name}.dev1',
                            owner=self, ns=ns1, **dev1_args)
-        self.dev2 = NetDev(topology=topology, name='%s.dev2' % name,
+        self.dev2 = NetDev(topology=topology, name=f'{name}.dev2',
                            owner=self, ns=ns2, **dev2_args)
         NetDev.set_peers(self.dev1, self.dev2)
-        key = '%s.%s' % (self.REF, self.name)
-        self.topology.members['%s.dev1' % key] = self.dev1
-        self.topology.members['%s.dev2' % key] = self.dev2
+        key = f'{self.REF}.{self.name}'
+        self.topology.members[f'{key}.dev1'] = self.dev1
+        self.topology.members[f'{key}.dev2'] = self.dev2
         self.topology.add_l2_conn(self.dev1, self.dev2)
 
     @classmethod
@@ -46,11 +46,12 @@ class Veth(TopologyMember):
                    dev1_args=d1_args, dev2_args=d2_args)
 
     def render_bash(self):
-        self.p('ip link add %s netns %s type veth '
-               'peer name %s netns %s' % (self.dev1.name, self.dev1.ns.name,
-                                          self.dev2.name, self.dev2.ns.name))
+        self.p(f'ip link add '
+               f'{self.dev1.name} netns {self.dev1.ns.name} '
+               f'type veth peer name '
+               f'{self.dev2.name} netns {self.dev2.ns.name}')
         self.dev1.render_bash()
         self.dev2.render_bash()
 
     def render_dot(self):
-        self.p('%s -- %s' % (self.dev1.dotname, self.dev2.dotname))
+        self.p(f'{self.dev1.dotname} -- {self.dev2.dotname}')
