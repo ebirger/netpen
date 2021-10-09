@@ -39,7 +39,7 @@ class Ipam():
                     continue
                 if d.master:
                     continue
-                addr = '%s/%s' % (next(hosts), pool.prefixlen)
+                addr = f'{next(hosts)}/{pool.prefixlen}'
                 d.add_addr(addr, subnet, pool)
 
     def assign_addrs(self):
