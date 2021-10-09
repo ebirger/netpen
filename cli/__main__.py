@@ -9,7 +9,7 @@ t = Topology()
 
 
 def _render(f, fmt):
-    t.printfn = lambda s: f.write('%s\n' % s)
+    t.printfn = lambda s: f.write(f'{s}\n')
 
     if fmt == 'bash':
         t.render_bash()
@@ -36,10 +36,11 @@ def _gen(args):
 
 def _desc(args):
     ent = next((b for b in t.builders if b.REF == args.type))
-    print('%s: %s' % (ent.REF, ent.DESC['title']))
+    print(f'{ent.REF}: {ent.DESC["title"]}')
     print('Schema:')
     s = yaml.dump(ent.SCHEMA, default_flow_style=False)
-    print('    %s' % s.replace('\n', '\n    '))
+    s_ = s.replace('\n', '\n    ')
+    print(f'    {s_}')
 
 
 def _types(_):
@@ -47,7 +48,7 @@ def _types(_):
     for b in t.builders:
         if not b.DESC:
             continue
-        print('- %s' % b.REF)
+        print(f'- {b.REF}')
 
 
 def build_parser():
