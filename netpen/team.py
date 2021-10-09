@@ -40,21 +40,18 @@ class Team(TopologyMember):
 
     def render_dot(self):
         for p in self.dev.ports:
-            self.p('%s -- %s [color="blue"]' % (self.dev.dotname,
-                                                p.dotname))
+            self.p(f'{self.dev.dotname} -- {p.dotname} [color="blue"]')
 
     def render_bash(self):
-        self.p('ip -net %s link add %s type %s' % (self.dev.ns.name,
-                                                   self.dev.name,
-                                                   self.REF))
-        self.p('ip netns exec %s teamnl %s setoption mode %s' % (
-            self.dev.ns.name, self.dev.name, self.mode))
+        self.p(f'ip -net {self.dev.ns.name} link add {self.dev.name} '
+               f'type {self.REF}')
+        self.p(f'ip netns exec {self.dev.ns.name} teamnl {self.dev.name} '
+               f'setoption mode {self.mode}')
 
         self.dev.render_bash()
 
         for p in self.dev.ports:
             p.render_bash_set_state('down')
-            self.p('ip -net %s link set %s master %s' % (self.dev.ns.name,
-                                                         p.name,
-                                                         self.dev.name))
+            self.p(f'ip -net {self.dev.ns.name} link set {p.name} '
+                   f'master {self.dev.name}')
             p.render_bash_set_state('up')
