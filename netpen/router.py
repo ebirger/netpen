@@ -116,13 +116,12 @@ class Router():
         return self._dedup_rts(rts)
 
     def _render_bash_route(self, ns, addr, dev, via, src, score):
-        s = 'ip %s -net %s route add %s dev %s metric %s' % (flag6(addr),
-                                                             ns.name, addr,
-                                                             dev.name, score)
+        s = f'ip {flag6(addr)} -net {ns.name} route add {addr} ' \
+            f'dev {dev.name} metric {score}'
         if not dev.noarp:
-            s += ' via %s' % via.main_addr
+            s += f' via {via.main_addr}'
 
-        s += ' src %s' % src
+        s += f' src {src}'
         self.topology.printfn(s)
 
     def render_bash(self):
