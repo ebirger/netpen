@@ -12,7 +12,7 @@ from dev.tests.common.utils import deploy_yaml
 def test_router(gen_examples, cleanup_nets):
     EXAMPLE_NAME = 'router'
 
-    deploy_script('%s.sh' % EXAMPLE_NAME)
+    deploy_script(f'{EXAMPLE_NAME}.sh')
 
     subnet = get_subnet(EXAMPLE_NAME, DEF_SUBNET_NAME)
 
@@ -27,7 +27,7 @@ def test_router(gen_examples, cleanup_nets):
 def test_bridge(gen_examples, cleanup_nets):
     EXAMPLE_NAME = 'bridge'
 
-    deploy_script('%s.sh' % EXAMPLE_NAME)
+    deploy_script(f'{EXAMPLE_NAME}.sh')
 
     subnet = get_subnet(EXAMPLE_NAME, DEF_SUBNET_NAME)
 
@@ -47,7 +47,7 @@ def test_bridge(gen_examples, cleanup_nets):
 def test_vlan(gen_examples, cleanup_nets):
     EXAMPLE_NAME = 'vlan'
 
-    deploy_script('%s.sh' % EXAMPLE_NAME)
+    deploy_script(f'{EXAMPLE_NAME}.sh')
 
     def_subnet, vlan_subnet = get_subnets(EXAMPLE_NAME, DEF_SUBNET_NAME, 'vlan')
 
@@ -75,7 +75,7 @@ def test_vlan(gen_examples, cleanup_nets):
 def test_macvlan(gen_examples, cleanup_nets):
     EXAMPLE_NAME = 'macvlan'
 
-    deploy_script('%s.sh' % EXAMPLE_NAME)
+    deploy_script(f'{EXAMPLE_NAME}.sh')
 
     subnet = get_subnet(EXAMPLE_NAME, DEF_SUBNET_NAME)
 
@@ -95,7 +95,7 @@ def test_macvlan(gen_examples, cleanup_nets):
 def test_team(gen_examples, cleanup_nets):
     EXAMPLE_NAME = 'team'
 
-    deploy_script('%s.sh' % EXAMPLE_NAME)
+    deploy_script(f'{EXAMPLE_NAME}.sh')
 
     subnet = get_subnet(EXAMPLE_NAME, DEF_SUBNET_NAME)
 
@@ -110,7 +110,7 @@ def test_team(gen_examples, cleanup_nets):
 def test_xfrm_transport(gen_examples, cleanup_nets):
     EXAMPLE_NAME = 'xfrm_transport'
 
-    deploy_script('%s.sh' % EXAMPLE_NAME)
+    deploy_script(f'{EXAMPLE_NAME}.sh')
 
     subnet = get_subnet(EXAMPLE_NAME, DEF_SUBNET_NAME)
 

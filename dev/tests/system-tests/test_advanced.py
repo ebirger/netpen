@@ -12,7 +12,7 @@ from dev.tests.common.utils import gen_examples  # pylint: disable=unused-import
 def test_vrf(gen_examples, cleanup_nets):
     EXAMPLE_NAME = 'vrf'
 
-    deploy_script('%s.sh' % EXAMPLE_NAME)
+    deploy_script(f'{EXAMPLE_NAME}.sh')
 
     green_subnet, blue_subnet = get_subnets(EXAMPLE_NAME, 'green', 'blue')
 
@@ -38,7 +38,7 @@ def test_vrf(gen_examples, cleanup_nets):
 def test_xdp(gen_examples, cleanup_nets):
     EXAMPLE_NAME = 'xdp'
 
-    deploy_script('%s.sh' % EXAMPLE_NAME)
+    deploy_script(f'{EXAMPLE_NAME}.sh')
 
     subnet = get_subnet(EXAMPLE_NAME, DEF_SUBNET_NAME)
 

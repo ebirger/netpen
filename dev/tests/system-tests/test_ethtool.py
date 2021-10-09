@@ -53,5 +53,5 @@ items:
         s = next((line for line in output.split('\n') if featurek in line))
         return s.split(':')[1].strip()
 
-    assert _get_feature(NS1_NAME, '%s.dev1' % VETH_NAME) == 'on'
-    assert _get_feature(NS2_NAME, '%s.dev2' % VETH_NAME) == 'off'
+    assert _get_feature(NS1_NAME, f'{VETH_NAME}.dev1') == 'on'
+    assert _get_feature(NS2_NAME, f'{VETH_NAME}.dev2') == 'off'

@@ -10,8 +10,8 @@ from netpen.topology import Topology
 
 
 EXAMPLES_DIR = './examples'
-EXAMPLES_GLOB = '%s/*.yml' % EXAMPLES_DIR
-EXAMPLES_LIST = '%s/example_list.yml' % EXAMPLES_DIR
+EXAMPLES_GLOB = f'{EXAMPLES_DIR}/*.yml'
+EXAMPLES_LIST = f'{EXAMPLES_DIR}/example_list.yml'
 EXAMPLES_OUTPUT_DIR = '/tmp/examples'
 
 
@@ -24,7 +24,7 @@ def netpen_bash(input_file, output_file):
     t.load(y)
 
     with open(output_file, 'w') as f:
-        t.printfn = lambda s: f.write('%s\n' % s)
+        t.printfn = lambda s: f.write(f'{s}\n')
         t.render_bash()
 
 
@@ -35,11 +35,12 @@ def all_example_file_names():
 
 
 def shellfile(fname):
-    return '%s.sh' % os.path.splitext(fname)[0]
+    base = os.path.splitext(fname)[0]
+    return f'{base}.sh'
 
 
 ALL_EXAMPLE_FILE_NAMES = all_example_file_names()
-ALL_EXAMPLE_FILES = ['%s/%s' % (EXAMPLES_OUTPUT_DIR, shellfile(f))
+ALL_EXAMPLE_FILES = [f'{EXAMPLES_OUTPUT_DIR}/{shellfile(f)}'
                      for f in ALL_EXAMPLE_FILE_NAMES]
 
 
@@ -56,8 +57,8 @@ def examples_output_dir():
 def gen_examples(examples_output_dir):
     ret = []
     for f in ALL_EXAMPLE_FILE_NAMES:
-        input_file = '%s/%s' % (EXAMPLES_DIR, f)
-        output_file = '%s/%s' % (examples_output_dir, shellfile(f))
+        input_file = f'{EXAMPLES_DIR}/{f}'
+        output_file = f'{examples_output_dir}/{shellfile(f)}'
         netpen_bash(input_file, output_file)
         ret.append(output_file)
         os.chmod(output_file, 0o777)
@@ -71,7 +72,7 @@ def deploy_yaml(yaml_txt):
 
     fn = None
     with tempfile.NamedTemporaryFile(mode='w', delete=False) as outfile:
-        t.printfn = lambda s: outfile.write('%s\n' % s)
+        t.printfn = lambda s: outfile.write(f'{s}\n')
         t.render_bash()
         fn = outfile.name
 

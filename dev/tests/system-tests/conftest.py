@@ -16,7 +16,7 @@ def kill_all_netns():
 
 
 def load_example(name):
-    with open('%s/%s.yml' % (EXAMPLES_DIR, name)) as f:
+    with open(f'{EXAMPLES_DIR}/{name}.yml') as f:
         return yaml.safe_load(f)
 
 
@@ -37,7 +37,7 @@ def cleanup_nets():
 
 
 def deploy_script(s):
-    subprocess.run(['sudo', '%s/%s' % (EXAMPLES_OUTPUT_DIR, s)], check=True)
+    subprocess.run(['sudo', f'{EXAMPLES_OUTPUT_DIR}/{s}'], check=True)
 
 
 def ns_cmd(ns, *args):
@@ -56,7 +56,7 @@ def ip_cmd(ns, *args, use_json=True):
 
 def get_ns_addrs(ns):
     addrs_raw = ip_cmd(ns, 'address')
-    return ['%s/%s' % (a['local'], a['prefixlen'])
+    return [f'{a["local"]}/{a["prefixlen"]}'
             for addr_raw in addrs_raw
             for a in addr_raw.get('addr_info', [])]
 

@@ -22,7 +22,7 @@ TUNNEL_PARAMS = [('ipip', 'overlay', 'zone1', 'zone2', 'tnl0', True, False),
                          TUNNEL_PARAMS)
 def test_tunnel(name, overlay, z1, z2, dev, is_l3, check_xfrm, gen_examples,
                 cleanup_nets):
-    deploy_script('%s.sh' % name)
+    deploy_script(f'{name}.sh')
 
     subnet = get_subnet(name, overlay)
 
@@ -38,5 +38,5 @@ def test_tunnel(name, overlay, z1, z2, dev, is_l3, check_xfrm, gen_examples,
         assert get_xfrm_packet_counts(z1) == [2, 2]
         assert get_xfrm_packet_counts(z2) == [2, 2]
 
-    assert get_route_dev(z1, z2incidr) == '%s.dev1' % dev
-    assert get_route_dev(z2, z1incidr) == '%s.dev2' % dev
+    assert get_route_dev(z1, z2incidr) == f'{dev}.dev1'
+    assert get_route_dev(z2, z1incidr) == f'{dev}.dev2'
