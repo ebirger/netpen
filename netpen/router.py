@@ -7,6 +7,7 @@ class Router():
     def __init__(self, topology):
         self.topology = topology
         self.nss = []
+        self._calculated_rts = []
 
     def add_ns(self, ns):
         self.nss.append(ns)
@@ -102,9 +103,9 @@ class Router():
         for rt in rts:
             ns, addr, *_ = rt
             deduped[(ns, addr)] = rt
-        return deduped.values()
+        return deduped
 
-    def _calc_rts(self):
+    def calc_rts(self):
         all_devs = list(chain.from_iterable(ns.devs for ns in self.nss))
         all_devs = [d for d in all_devs if d.addrs]
 
@@ -113,7 +114,7 @@ class Router():
 
         rts = chain.from_iterable(self._calc_ns_rts(all_devs, ns, pools_info)
                                   for ns in self.nss)
-        return self._dedup_rts(rts)
+        self._calculated_rts = self._dedup_rts(rts)
 
     def _render_bash_route(self, ns, addr, dev, via, src, score):
         s = f'ip {flag6(addr)} -net {ns.name} route add {addr} ' \
@@ -127,5 +128,5 @@ class Router():
     def render_bash(self):
         self.topology.printfn('\n# routes')
 
-        for rt in self._calc_rts():
+        for rt in self._calculated_rts.values():
             self._render_bash_route(*rt)

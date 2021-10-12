@@ -112,6 +112,8 @@ class Topology():
 
         self.done_list = set()
 
+        self.router.calc_rts()
+
         while True:
             missing = False
             for cls in self.builders:
