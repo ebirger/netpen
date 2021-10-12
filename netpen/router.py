@@ -1,3 +1,4 @@
+import ipaddress
 from itertools import combinations, chain
 import networkx as nx
 from .utils import flag6
@@ -124,6 +125,22 @@ class Router():
 
         s += f' src {src}'
         self.topology.printfn(s)
+
+    def render_bash_route(self, ns, addr):
+        found = None
+        for rt_ns, rt_addr in self._calculated_rts:
+            if rt_ns != ns:
+                continue
+            if ipaddress.ip_address(addr) not in rt_addr:
+                continue
+            found = (rt_ns, rt_addr)
+            break
+
+        if not found:
+            return
+
+        rt = self._calculated_rts.pop(found)
+        self._render_bash_route(*rt)
 
     def render_bash(self):
         self.topology.printfn('\n# routes')
