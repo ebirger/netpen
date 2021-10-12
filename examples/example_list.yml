@@ -44,6 +44,9 @@
     - name: GRE
       path: gre.yml
 
+    - name: L2TP
+      path: l2tp.yml
+
 - title: Advanced
   items:
     - name: Virtual Routing and Forwarding (VRF)
