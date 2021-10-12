@@ -293,3 +293,57 @@ class XfrmTunnel(Xfrm, Tunnel):
 
         self.dev1.render_bash()
         self.dev2.render_bash()
+
+
+class L2tp(Tunnel):
+    TUNNEL_MODE = 'l2tp'
+    DESC = {'title': 'L2TP based tunnel'}
+    LAST_TUN_SESS_ID = 1
+    NOARP = False
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.topology.add_l2_conn(self.dev1, self.dev2)
+
+    @classmethod
+    def _alloc_tun_sess_id(cls):
+        # some kernel versions expect unique session ids even across
+        # different tunnels
+        ret = cls.LAST_TUN_SESS_ID
+        cls.LAST_TUN_SESS_ID += 1
+        return ret
+
+    def render_bash(self):
+        tun_sess_id = self._alloc_tun_sess_id()
+
+        self.p('# l2tp requires an underlay route to exist before '
+               'creating the tunnel')
+        self.topology.router.render_bash_route(self.dev1.ns,
+                                               self.link2.main_addr)
+        self.p(f'ip -net {self.dev1.ns.name} l2tp add tunnel '
+               f'remote {self.link2.main_addr} '
+               f'local {self.link1.main_addr} '
+               f'tunnel_id {tun_sess_id} '
+               f'peer_tunnel_id {tun_sess_id} '
+               f'encap ip')
+
+        self.p(f'ip -net {self.dev1.ns.name} l2tp add session '
+               f'name {self.dev1.name} tunnel_id {tun_sess_id} '
+               f'session_id 1 peer_session_id 1')
+        self.dev1.render_bash()
+
+        self.p('# l2tp requires an underlay route to exist before '
+               'creating the tunnel')
+        self.topology.router.render_bash_route(self.dev2.ns,
+                                               self.link1.main_addr)
+        self.p(f'ip -net {self.dev2.ns.name} l2tp add tunnel '
+               f'remote {self.link1.main_addr} '
+               f'local {self.link2.main_addr} '
+               f'tunnel_id {tun_sess_id} '
+               f'peer_tunnel_id {tun_sess_id} '
+               f'encap ip')
+
+        self.p(f'ip -net {self.dev2.ns.name} l2tp add session '
+               f'name {self.dev2.name} tunnel_id {tun_sess_id} '
+               f'session_id 1 peer_session_id 1')
+        self.dev2.render_bash()
