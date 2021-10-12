@@ -31,6 +31,7 @@ and routes.
   - VXLAN
   - GRE
   - WireGuard
+  - L2TP
 - Virtual Routing and Forwarding (VRF)
 - eBPF Program
 
