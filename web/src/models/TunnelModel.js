@@ -26,6 +26,10 @@ export const TunnelTypes = [
   {
     value: 'xfrm',
     label: 'XFRM'
+  },
+  {
+    value: 'l2tp',
+    label: 'L2TP'
   }
 ];
 
@@ -78,7 +82,7 @@ Tunnel devices implement virtual networks on top of other networks
   }
 
   getL2Devs() {
-    if (this.mode !== 'vxlan')
+    if (this.mode !== 'vxlan' && this.mode !== 'l2tp')
       return null;
 
     return [this.devparams1, this.devparams2];
