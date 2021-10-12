@@ -15,7 +15,8 @@ TUNNEL_PARAMS = [('ipip', 'overlay', 'zone1', 'zone2', 'tnl0', True, False),
                  ('xfrmi', 'green', 'alice', 'bob', 'safe', True, True),
                  ('gre_xfrm', 'overlay', 'zone1', 'zone2', 'tnl0', True, True),
                  ('wireguard', 'green', 'alice', 'bob', 'safe', True, False),
-                 ('vxlan', 'overlay', 'zone1', 'zone2', 'tnl0', False, False)]
+                 ('vxlan', 'overlay', 'zone1', 'zone2', 'tnl0', False, False),
+                 ('l2tp', 'overlay', 'zone1', 'zone2', 'tnl0', False, False)]
 
 
 @pytest.mark.parametrize('name,overlay,z1,z2,dev,is_l3,check_xfrm',
