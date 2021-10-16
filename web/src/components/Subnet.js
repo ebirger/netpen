@@ -22,6 +22,9 @@ SubnetList.propTypes = {
 
 const CIDRS = ["198.51.100.0/24", "10.0.0.0/24", "192.168.1.0/24"];
 
+export const defaultSubnet = new SubnetModel(null, "default", "subnet",
+  CIDRS[0]);
+
 export default function Subnet(props) {
   const cidr = props.item.cidr || CIDRS[0];
   const {id, name, type} = props.item;

@@ -5,6 +5,8 @@ import YAML from 'yaml';
 import { Redirect } from 'react-router-dom';
 import { Button, Divider } from 'antd'
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import { serializeObjList } from '../models/ObjModel.js';
+import { defaultSubnet } from './Subnet.js';
 import PenLoader from './PenLoader.js';
 import PenList from './PenList.js';
 
@@ -112,7 +114,9 @@ export function NewPenButton() {
 
   function onAdd() {
     const title = 'Great Plan';
-    setRedirect(newPersonalPen(title, []));
+    const objList = {};
+    objList[defaultSubnet.id] = defaultSubnet;
+    setRedirect(newPersonalPen(title, serializeObjList(objList)));
   }
 
   if (redirect)
