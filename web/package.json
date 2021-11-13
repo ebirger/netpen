@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "eslint": "^7.21.0",
-    "eslint-plugin-react": "^7.22.0"
+    "eslint-plugin-react": "^7.22.0",
+    "yarn-check": "^0.0.3"
   }
 }
