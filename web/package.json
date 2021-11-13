@@ -3,25 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@craco/craco": "^6.1.1",
-    "@monaco-editor/react": "^4.2.1",
+    "@craco/craco": "6.4.0",
+    "@monaco-editor/react": "4.3.1",
     "@svgr/webpack": "^5.5.0",
     "antd": "^4.14.0",
-    "craco-less": "^1.17.1",
+    "craco-less": "1.20.0",
     "ip6addr": "^0.2.3",
-    "react": "^17.0.1",
-    "react-copy-to-clipboard": "^5.0.3",
-    "react-dom": "^17.0.1",
-    "react-github-btn": "^1.2.0",
-    "react-map-interaction": "^2.0.0",
+    "react": "17.0.2",
+    "react-copy-to-clipboard": "5.0.4",
+    "react-dom": "17.0.2",
+    "react-github-btn": "1.2.1",
+    "react-map-interaction": "2.1.0",
     "react-responsive": "^8.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "reactour": "^1.18.6",
     "styled-components": "^4.0.0",
-    "url-parse": "^1.5.1",
+    "url-parse": "1.5.3",
     "viz.js": "^2.1.2",
-    "yaml": "^1.10.1"
+    "yaml": "1.10.2"
   },
   "scripts": {
     "start": "export NODE_OPTIONS=--openssl-legacy-provider; craco start",
@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "eslint": "^7.21.0",
-    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react": "7.27.0",
     "yarn-check": "^0.0.3"
   }
 }
