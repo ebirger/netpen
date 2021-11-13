@@ -8,6 +8,10 @@ build-dev:
 	docker-compose -f docker-compose.yml build
 .PHONY: build-dev
 
+yarn-check:
+	docker exec -it netpen-web $@ -u
+.PHONY: yarn-check
+
 validation-tests system-tests:
 	$(MAKE) -C tests/$@
 .PHONY: validation-tests system-tests

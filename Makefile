@@ -7,7 +7,7 @@ cli/out/$(TARGET): netpen
 
 $(TARGET): cli/out/$(TARGET)
 
-dev build-dev lint pycodestyle validation-tests system-tests:
+dev build-dev lint pycodestyle validation-tests system-tests yarn-check:
 	$(MAKE) -C dev $@
 
 screenshots:
