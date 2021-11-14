@@ -17,6 +17,6 @@ export default class EthtoolModel {
   }
 
   toDict() {
-    return filterObject(this.options, (k, v) => (v));
+    return filterObject(this.options, (k, v) => (v !== null));
   }
 }

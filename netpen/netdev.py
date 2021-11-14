@@ -119,6 +119,9 @@ class NetDev():
             self.p(f'ip {_flag6(a)} -net {ns_name} addr add {a} '
                    f'dev {name}{dad}')
         for k, v in self.ethtool.items():
+            if isinstance(v, str):
+                v = v in ('y', 'Y', 'yes', 'Yes', 'YES', 'true', 'True',
+                          'TRUE', 'on', 'On', 'ON')
             val = 'on' if v else 'off'
             self.p(f'ip netns exec {ns_name} ethtool -K {name} {k} {val}')
         if self.xdp:

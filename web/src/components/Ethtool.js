@@ -8,8 +8,8 @@ const { Panel } = Collapse;
 
 const EthtoolValues = [
   {label: "Default", value: null},
-  {label: "On", value: 'on'},
-  {label: "Off", value: 'off'},
+  {label: "On", value: true},
+  {label: "Off", value: false},
 ];
 
 export default function Ethtool(props) {
