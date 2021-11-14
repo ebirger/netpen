@@ -26,11 +26,25 @@ export default function DownloadButton(props) {
     };
 
     fetch(bashUrl, requestMetadata).then(res => res.text())
-      .then(o => {downloadText(o, 'netpen.sh');});
+      .then(o => {
+        const fname = makeFilename(data.settings.title, '.sh');
+        downloadText(o, fname);
+      });
   }
 
   function getBash() {
     props.getData(gotData);
+  }
+
+  function makeFilename(title, suffix) {
+    let fname;
+    if (title === undefined || title.length == 0) {
+      fname = 'netpen';
+    }
+    else {
+      fname = title.replaceAll(' ', '_').replaceAll('/', '').toLowerCase();
+    }
+    return fname + suffix;
   }
 
   function handleMenuClick(e) {
@@ -41,7 +55,8 @@ export default function DownloadButton(props) {
     case 'yaml':
       props.getData((o) => {
         const txt = YAML.stringify(o, {indent: 2});
-        downloadText(txt, 'netpen.yaml');
+        const fname = makeFilename(o.settings.title, '.yaml');
+        downloadText(txt, fname);
       });
       break;
     }
