@@ -53,8 +53,6 @@ export function serializeObjList(objlist) {
     if (!base)
       return null;
     base = base.dictId()
-    if (elems[0] === 'dev')
-      return base;
     return `${base}.${elems[0]}`;
   }
 
