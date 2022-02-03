@@ -16,28 +16,14 @@ items:
   - netns:
       name: zone2
 
-  - netns:
-      name: router
-
   - veth:
-      name: z1tor
+      name: z1z2
       dev1:
         netns: netns.zone1
         subnets:
           - subnet.default
       dev2:
-        netns: netns.router
-        subnets:
-          - subnet.default
-
-  - veth:
-      name: z2tor
-      dev1:
         netns: netns.zone2
-        subnets:
-          - subnet.default
-      dev2:
-        netns: netns.router
         subnets:
           - subnet.default
 
@@ -46,5 +32,5 @@ items:
       mode: gre
       subnets:
         - subnet.overlay
-      link1: veth.z1tor.dev1
-      link2: veth.z2tor.dev1
+      link1: veth.z1z2.dev1
+      link2: veth.z1z2.dev2
