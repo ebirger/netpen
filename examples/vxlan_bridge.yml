@@ -14,32 +14,15 @@ items:
       name: zone1
 
   - netns:
-      name: router1
-
-  - netns:
       name: br
 
   - netns:
       name: zone2
 
-  - netns:
-      name: router2
-
   - veth:
-      name: z1tor1
+      name: z1tobr
       dev1:
         netns: netns.zone1
-        subnets:
-          - subnet.default
-      dev2:
-        netns: netns.router1
-        subnets:
-          - subnet.default
-
-  - veth:
-      name: r1tobr
-      dev1:
-        netns: netns.router1
         subnets:
           - subnet.default
       dev2:
@@ -48,20 +31,9 @@ items:
           - subnet.default
 
   - veth:
-      name: z2tor2
+      name: z2tobr
       dev1:
         netns: netns.zone2
-        subnets:
-          - subnet.default
-      dev2:
-        netns: netns.router2
-        subnets:
-          - subnet.default
-
-  - veth:
-      name: r2tobr
-      dev1:
-        netns: netns.router2
         subnets:
           - subnet.default
       dev2:
@@ -74,20 +46,22 @@ items:
       mode: vxlan
       subnets:
         - subnet.overlay
-      link1: veth.z1tor1.dev1
-      link2: veth.r1tobr.dev2
+      link1: veth.z1tobr.dev1
+      link2: veth.z1tobr.dev2
 
   - tunnel:
       name: vxlan2
       mode: vxlan
       subnets:
         - subnet.overlay
-      link1: veth.z2tor2.dev1
-      link2: veth.r2tobr.dev2
+      link1: veth.z2tobr.dev1
+      link2: veth.z2tobr.dev2
 
   - bridge:
       name: br0
       netns: netns.br
+      subnets:
+        - subnet.overlay
       ports:
         - tunnel.vxlan1.dev2
         - tunnel.vxlan2.dev2
