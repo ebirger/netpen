@@ -71,9 +71,7 @@ def test_vxlan_bridge(gen_examples, cleanup_nets):
 
     assert z1_o_net == z2_o_net == br_o_net
 
-    print(z1_o_net)
-    print(z2_o_net)
-    print(br_o_net)
     ping('zone1', z2_in_o)
     ping('zone1', br_in_o)
     ping('zone2', br_in_o)
+    ping('br', z1_in_o)
