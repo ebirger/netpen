@@ -1,4 +1,7 @@
 all: tests
 
+PYTEST_FLAGS=$(if $(VERBOSE),-s)
+
 tests:
-	cd ../../.. && PYTHONPATH=. pytest dev/tests/system-tests --verbose
+	cd ../../.. && PYTHONPATH=. pytest $(PYTEST_FLAGS) \
+		dev/tests/system-tests --verbose
