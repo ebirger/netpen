@@ -54,3 +54,26 @@ def test_xdp(gen_examples, cleanup_nets):
 
     # should work now
     ping('xdp1', xdp2incidr)
+
+
+def test_vxlan_bridge(gen_examples, cleanup_nets):
+    EXAMPLE_NAME = 'vxlan_bridge'
+
+    deploy_script(f'{EXAMPLE_NAME}.sh')
+
+    def_subnet, overlay_subnet = get_subnets(EXAMPLE_NAME, 'default', 'overlay')
+
+    assert def_subnet != overlay_subnet
+
+    z1_in_o, z1_o_net = get_ns_addr_in_subnet('zone1', overlay_subnet)
+    z2_in_o, z2_o_net = get_ns_addr_in_subnet('zone2', overlay_subnet)
+    br_in_o, br_o_net = get_ns_addr_in_subnet('br', overlay_subnet)
+
+    assert z1_o_net == z2_o_net == br_o_net
+
+    print(z1_o_net)
+    print(z2_o_net)
+    print(br_o_net)
+    ping('zone1', z2_in_o)
+    ping('zone1', br_in_o)
+    ping('zone2', br_in_o)
