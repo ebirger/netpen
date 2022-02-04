@@ -8,7 +8,7 @@ function getPaths() {
   const content = fs.readFileSync(fname, "utf8", function(err, data) {
     return data;
   });
-  
+
   const o = YAML.parse(content);
   let paths = [];
   o.forEach((x) => {
