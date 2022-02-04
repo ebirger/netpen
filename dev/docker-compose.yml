@@ -35,8 +35,8 @@ services:
             - REACT_APP_API_BASE=/
             - REACT_APP_EXAMPLES_BASE=/example-files/
         volumes:
-            - ../web:/app
-            - web_modules:/app/node_modules
+            - ../:/app
+            - web_modules:/app/web/node_modules
         ports:
             - 3000:3000
 volumes:
