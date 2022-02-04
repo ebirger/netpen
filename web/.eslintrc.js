@@ -1,7 +1,6 @@
 module.exports = {
   "globals": {
     "process": true,
-    "require": true,
     "module": true
   },
   "env": {
