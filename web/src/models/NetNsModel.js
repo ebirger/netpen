@@ -16,10 +16,13 @@ own set of network interfaces, routes, firewall rules, etc.
   }
 
   toDict() {
-    let ret = {name: this.name, forwarding: this.forwarding};
+    let ret = {name: this.name};
 
     if (this.netserver)
       ret.netserver = true;
+
+    if (this.forwarding === false)
+      ret.forwarding = true;
 
     if (this.enableLo)
       ret.enable_lo = true;

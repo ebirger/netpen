@@ -21,7 +21,8 @@ network namespace
     if (!ret)
       return null;
 
-    ret.add_default_unreach = this.default_unreach;
+    if (this.default_unreach === false)
+      ret.add_default_unreach = this.default_unreach;
     return ret;
   }
 
