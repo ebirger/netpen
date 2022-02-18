@@ -11,7 +11,8 @@ class Tunnel(TopologyMember):
         'type': 'object',
         'additionalProperties': False,
         'properties': {
-            'mode': {'type': 'string'}
+            'mode': {'type': 'string'},
+            'netns': {'type': 'string'}
         }
     }
     SCHEMA = {
@@ -30,14 +31,16 @@ class Tunnel(TopologyMember):
     }
 
     def __init__(self, topology, name, subnets, link1_dev, link2_dev,
-                 _dev1=None, _dev2=None):
+                 dev1=None, dev2=None):
         super().__init__(topology, name)
+        dev1_ns = (dev1.get('ns') if dev1 else None) or link1_dev.ns
+        dev2_ns = (dev2.get('ns') if dev2 else None) or link2_dev.ns
         self.dev1 = NetDev(topology=topology, name=f'{name}.dev1',
-                           owner=self, subnets=subnets, ns=link1_dev.ns,
-                           noarp=self.NOARP)
+                           owner=self, subnets=subnets, ns=dev1_ns,
+                           noarp=self.NOARP, link=link1_dev)
         self.dev2 = NetDev(topology=topology, name=f'{name}.dev2',
-                           owner=self, subnets=subnets, ns=link2_dev.ns,
-                           noarp=self.NOARP)
+                           owner=self, subnets=subnets, ns=dev2_ns,
+                           noarp=self.NOARP, link=link2_dev)
         self.dev1.tss[self.dev2] = subnets
         self.dev2.tss[self.dev1] = subnets
         self.link1 = link1_dev
@@ -73,6 +76,10 @@ class Tunnel(TopologyMember):
         dev1 = params.get('dev1')
         dev2 = params.get('dev2')
 
+        for d in (dev1, dev2):
+            if d and (ns := d.get('netns')):
+                d['ns'] = topology.members[ns]
+
         return ctor(topology, params['name'], subnets, link1, link2, dev1,
                     dev2)
 
@@ -89,12 +96,12 @@ class IpIp(Tunnel):
     DESC = {'title': 'IPIP based tunnel'}
 
     def render_bash(self):
-        self.p(f'ip -net {self.dev1.ns.name} link add {self.dev1.name} '
+        self.p(f'ip -net {self.link1.ns.name} link add {self.dev1.name} '
                f'type {self.TUNNEL_MODE} remote {self.link2.main_addr} '
                f'local {self.link1.main_addr}')
         self.dev1.render_bash()
 
-        self.p(f'ip -net {self.dev2.ns.name} link add {self.dev2.name} '
+        self.p(f'ip -net {self.link2.ns.name} link add {self.dev2.name} '
                f'type {self.TUNNEL_MODE} remote {self.link1.main_addr} '
                f'local {self.link2.main_addr}')
         self.dev2.render_bash()
@@ -124,13 +131,13 @@ class VxLan(Tunnel):
 
     def render_bash(self):
         vni = self._alloc_vni()
-        self.p(f'ip -net {self.dev1.ns.name} link add {self.dev1.name} '
+        self.p(f'ip -net {self.link1.ns.name} link add {self.dev1.name} '
                f'type {self.TUNNEL_MODE} id {vni} '
                f'remote {self.link2.main_addr} local {self.link1.main_addr} '
                f'dstport 0')
         self.dev1.render_bash()
 
-        self.p(f'ip -net {self.dev2.ns.name} link add {self.dev2.name} '
+        self.p(f'ip -net {self.link2.ns.name} link add {self.dev2.name} '
                f'type {self.TUNNEL_MODE} id {vni} '
                f'remote {self.link1.main_addr} local {self.link2.main_addr} '
                f'dstport 0')
@@ -150,12 +157,12 @@ class Gre(Tunnel):
 
     def render_bash(self):
         key = self._alloc_key()
-        self.p(f'ip -net {self.dev1.ns.name} link add {self.dev1.name} '
+        self.p(f'ip -net {self.link1.ns.name} link add {self.dev1.name} '
                f'type {self.TUNNEL_MODE} remote {self.link2.main_addr} '
                f'local {self.link1.main_addr} key {key}')
         self.dev1.render_bash()
 
-        self.p(f'ip -net {self.dev2.ns.name} link add {self.dev2.name} '
+        self.p(f'ip -net {self.link2.ns.name} link add {self.dev2.name} '
                f'type {self.TUNNEL_MODE} remote {self.link1.main_addr} '
                f'local {self.link2.main_addr} key {key}')
         self.dev2.render_bash()
@@ -167,8 +174,9 @@ class Wireguard(Tunnel):
     SCHEMA = Tunnel.SCHEMA
 
     def __init__(self, topology, name, subnets, link1_dev, link2_dev,
-                 _dev1=None, _dev2=None):
-        Tunnel.__init__(self, topology, name, subnets, link1_dev, link2_dev)
+                 dev1=None, dev2=None):
+        Tunnel.__init__(self, topology, name, subnets, link1_dev, link2_dev,
+                        dev1, dev2)
 
         self.addrs = [s.cidr for s in subnets]
 
@@ -225,7 +233,8 @@ class XfrmTunnel(Xfrm, Tunnel):
     def __init__(self, topology, name, subnets, link1_dev, link2_dev,
                  dev1=None, dev2=None):
 
-        Tunnel.__init__(self, topology, name, subnets, link1_dev, link2_dev)
+        Tunnel.__init__(self, topology, name, subnets, link1_dev, link2_dev,
+                        dev1, dev2)
 
         dev1 = dev1 or {}
         dev2 = dev2 or {}
@@ -320,14 +329,14 @@ class L2tp(Tunnel):
                'creating the tunnel')
         self.topology.router.render_bash_route(self.dev1.ns,
                                                self.link2.main_addr)
-        self.p(f'ip -net {self.dev1.ns.name} l2tp add tunnel '
+        self.p(f'ip -net {self.link1.ns.name} l2tp add tunnel '
                f'remote {self.link2.main_addr} '
                f'local {self.link1.main_addr} '
                f'tunnel_id {tun_sess_id} '
                f'peer_tunnel_id {tun_sess_id} '
                f'encap ip')
 
-        self.p(f'ip -net {self.dev1.ns.name} l2tp add session '
+        self.p(f'ip -net {self.link1.ns.name} l2tp add session '
                f'name {self.dev1.name} tunnel_id {tun_sess_id} '
                f'session_id 1 peer_session_id 1')
         self.dev1.render_bash()
@@ -336,14 +345,14 @@ class L2tp(Tunnel):
                'creating the tunnel')
         self.topology.router.render_bash_route(self.dev2.ns,
                                                self.link1.main_addr)
-        self.p(f'ip -net {self.dev2.ns.name} l2tp add tunnel '
+        self.p(f'ip -net {self.link2.ns.name} l2tp add tunnel '
                f'remote {self.link1.main_addr} '
                f'local {self.link2.main_addr} '
                f'tunnel_id {tun_sess_id} '
                f'peer_tunnel_id {tun_sess_id} '
                f'encap ip')
 
-        self.p(f'ip -net {self.dev2.ns.name} l2tp add session '
+        self.p(f'ip -net {self.link2.ns.name} l2tp add session '
                f'name {self.dev2.name} tunnel_id {tun_sess_id} '
                f'session_id 1 peer_session_id 1')
         self.dev2.render_bash()
