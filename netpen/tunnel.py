@@ -228,7 +228,7 @@ class XfrmTunnel(Xfrm, Tunnel):
         Tunnel.__init__(self, topology, name, subnets, link1_dev, link2_dev)
 
         dev1 = dev1 or {}
-        dev1 = dev2 or {}
+        dev2 = dev2 or {}
 
         self.dev1_mode = dev1.get('mode') or 'xfrm'
         self.dev2_mode = dev2.get('mode') or 'xfrm'
