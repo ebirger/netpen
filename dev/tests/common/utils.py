@@ -15,17 +15,24 @@ EXAMPLES_LIST = f'{EXAMPLES_DIR}/example_list.yml'
 EXAMPLES_OUTPUT_DIR = '/tmp/examples'
 
 
-def netpen_bash(input_file, output_file):
+def netpen_yaml_to_bash(input_yaml, fname):
+    output_file = f'{EXAMPLES_OUTPUT_DIR}/{shellfile(fname)}'
     t = Topology()
 
-    with open(input_file) as f:
-        y = yaml.safe_load(f)
-
-    t.load(y)
+    t.load(input_yaml)
 
     with open(output_file, 'w') as f:
         t.printfn = lambda s: f.write(f'{s}\n')
         t.render_bash()
+    os.chmod(output_file, 0o777)
+    return output_file
+
+
+def netpen_bash(input_file, fname):
+    with open(input_file) as f:
+        y = yaml.safe_load(f)
+
+    return netpen_yaml_to_bash(y, fname)
 
 
 def all_example_file_names():
@@ -54,14 +61,12 @@ def examples_output_dir():
 
 
 @pytest.fixture(scope='session', autouse=True)
-def gen_examples(examples_output_dir):
+def gen_examples(examples_output_dir):  # pylint: disable=unused-argument
     ret = []
     for f in ALL_EXAMPLE_FILE_NAMES:
         input_file = f'{EXAMPLES_DIR}/{f}'
-        output_file = f'{examples_output_dir}/{shellfile(f)}'
-        netpen_bash(input_file, output_file)
+        output_file = netpen_bash(input_file, f)
         ret.append(output_file)
-        os.chmod(output_file, 0o777)
     return ret
 
 
