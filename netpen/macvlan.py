@@ -39,8 +39,6 @@ class MacVlan(TopologyMember):
     def render_bash(self):
         self.p(f'ip -net {self.link.ns.name} link add {self.dev.name} '
                f'link {self.link.name} type macvlan mode bridge')
-        self.p(f'ip -net {self.link.ns.name} link set {self.dev.name} '
-               f'netns {self.dev.ns.name}')
         self.dev.render_bash()
 
     def render_dot(self):

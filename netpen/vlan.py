@@ -40,11 +40,8 @@ class Vlan(TopologyMember):
                    dev_args=dev_args)
 
     def render_bash(self):
-        link_ns_name = self.link.ns.name
-        self.p(f'ip -net {link_ns_name} link add {self.dev.name} '
+        self.p(f'ip -net {self.link.ns.name} link add {self.dev.name} '
                f'link {self.link.name} type vlan id {self.tag}')
-        self.p(f'ip -net {link_ns_name} link set {self.dev.name} '
-               f'netns {self.dev.ns.name}')
         self.dev.render_bash()
 
     def render_dot(self):

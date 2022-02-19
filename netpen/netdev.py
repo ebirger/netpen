@@ -111,6 +111,10 @@ class NetDev():
         ns_name = self.ns.name
         name = self.name
 
+        if self.link and self.link.ns != self.ns:
+            self.p(f'ip -net {self.link.ns.name} link set {self.name} '
+                   f'netns {self.ns.name}')
+
         self.render_bash_set_state('up')
         if self.mtu:
             self.p(f'ip -net {ns_name} link set {name} mtu {self.mtu}')
