@@ -49,12 +49,15 @@ export const XfrmTunnelModes = [
 ];
 
 export class TunnelDeviceParams {
-  constructor(mode) {
+  constructor(mode, netns) {
     this.mode = mode || XfrmTunnelModes[0].value;
+    this.netns = netns;
   }
 
   toDict(mode, getDictIdbyId) {
     const ret = {};
+    if (this.netns)
+      ret.netns = getDictIdbyId(this.netns);
     if (mode === "xfrm")
       ret.mode = this.mode;
     return ret;
@@ -72,16 +75,16 @@ Tunnel devices implement virtual networks on top of other networks
     this.subnets = subnets;
     this.link1 = link1;
     this.link2 = link2;
-    let ns1 = null;
-    let ns2 = null;
+    let ns1 = dev1Params ? dev1Params.netns : null;
+    let ns2 = dev2Params ? dev2Params.netns : null;
     this.dev1Params = dev1Params;
     this.dev2Params = dev2Params;
     if (getItemById) {
-      if (link1) {
+      if (!ns1 && link1) {
         const o = getItemById(link1);
         ns1 = o ? o.netns : null;
       }
-      if (link2) {
+      if (!ns2 && link2) {
         const o = getItemById(link2);
         ns2 = o ? o.netns : null;
       }
@@ -130,14 +133,30 @@ Tunnel devices implement virtual networks on top of other networks
   resolve(getIdByDictId, getItemById) {
     if (this.subnets)
       this.subnets = SubnetModel.listFromDict(getIdByDictId, this.subnets);
+
+    let dev1Netns = null;
+    let dev2Netns = null;
+
     if (this.link1) {
       this.link1 = getIdByDictId(this.link1);
-      this.devparams1.netns = getItemById(this.link1).netns;
+      dev1Netns = getItemById(this.link1).netns;
     }
     if (this.link2) {
       this.link2 = getIdByDictId(this.link2);
-      this.devparams2.netns = getItemById(this.link2).netns;
+      dev2Netns = getItemById(this.link2).netns;
     }
+    if (this.dev1Params && this.dev1Params.netns) {
+      dev1Netns = getIdByDictId(this.dev1Params.netns);
+      this.dev1Params.netns = dev1Netns;
+    }
+
+    if (this.dev2Params && this.dev1Params.netns) {
+      dev2Netns = getIdByDictId(this.dev2Params.netns);
+      this.dev2Params.netns = dev2Netns;
+    }
+
+    this.devparams1.netns = dev1Netns;
+    this.devparams2.netns = dev2Netns;
   }
 
   static fromDict(type, params) {
@@ -145,11 +164,11 @@ Tunnel devices implement virtual networks on top of other networks
     let dev2Params = null;
     if (params.dev1) {
       const dev = params.dev1;
-      dev1Params = new TunnelDeviceParams(dev.mode);
+      dev1Params = new TunnelDeviceParams(dev.mode, dev.netns);
     }
     if (params.dev2) {
       const dev = params.dev2;
-      dev2Params = new TunnelDeviceParams(dev.mode);
+      dev2Params = new TunnelDeviceParams(dev.mode, dev.netns);
     }
     return new TunnelModel(null, params.name, type, params.mode, params.subnets,
       params.link1, params.link2, dev1Params, dev2Params);
