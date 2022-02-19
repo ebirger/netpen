@@ -2,6 +2,7 @@
 
 [![System Tests](https://github.com/ebirger/netpen/actions/workflows/system-tests.yml/badge.svg)](https://github.com/ebirger/netpen/actions/workflows/system-tests.yml)
 [![Validation Tests](https://github.com/ebirger/netpen/actions/workflows/validation-tests.yml/badge.svg)](https://github.com/ebirger/netpen/actions/workflows/validation-tests.yml)
+[![Web Tests](https://github.com/ebirger/netpen/actions/workflows/web-tests.yml/badge.svg)](https://github.com/ebirger/netpen/actions/workflows/web-tests.yml)
 
 Visual editor and API for network environments script generation
 
