@@ -89,12 +89,10 @@ Tunnel devices implement virtual networks on top of other networks
         ns2 = o ? o.netns : null;
       }
     }
-    this.devparams1 = new NetDevParamsModel(null, `${name}.dev1`, type, ns1,
-      this.subnets, undefined);
-    this.devparams2 = new NetDevParamsModel(null, `${name}.dev2`, type, ns2,
-      this.subnets, undefined);
-    this.devparams1.id = `dev1@${this.id}`
-    this.devparams2.id = `dev2@${this.id}`
+    this.devparams1 = new NetDevParamsModel(`dev1@${this.id}`, `${name}.dev1`,
+      type, ns1, this.subnets, undefined);
+    this.devparams2 = new NetDevParamsModel(`dev2@${this.id}`, `${name}.dev2`,
+      type, ns2, this.subnets, undefined);
   }
 
   getL2Devs() {
