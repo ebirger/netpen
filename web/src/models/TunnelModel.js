@@ -50,7 +50,7 @@ export const XfrmTunnelModes = [
 
 export class TunnelDeviceParams {
   constructor(mode, netns) {
-    this.mode = mode || XfrmTunnelModes[0].value;
+    this.mode = mode;
     this.netns = netns;
   }
 
@@ -58,7 +58,7 @@ export class TunnelDeviceParams {
     const ret = {};
     if (this.netns)
       ret.netns = getDictIdbyId(this.netns);
-    if (mode === "xfrm")
+    if (mode === "xfrm" && this.mode)
       ret.mode = this.mode;
     return ret;
   }

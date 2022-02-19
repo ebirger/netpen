@@ -43,7 +43,7 @@ TunnelMode.propTypes = {
 };
 
 function TunnelDeviceAdvanced(props) {
-  const mode = props.devParams ? props.devParams.mode : '';
+  const mode = props.devParams ? props.devParams.mode : null;
   const netns = props.devParams ? props.devParams.netns : null;
 
   function onTunnelModeChange(newTunnelMode) {
