@@ -148,7 +148,7 @@ Tunnel devices implement virtual networks on top of other networks
       this.dev1Params.netns = dev1Netns;
     }
 
-    if (this.dev2Params && this.dev1Params.netns) {
+    if (this.dev2Params && this.dev2Params.netns) {
       dev2Netns = getIdByDictId(this.dev2Params.netns);
       this.dev2Params.netns = dev2Netns;
     }
