@@ -48,9 +48,22 @@ export const XfrmTunnelModes = [
   },
 ];
 
+export class TunnelDeviceParams {
+  constructor(mode) {
+    this.mode = mode || XfrmTunnelModes[0].value;
+  }
+
+  toDict(mode, getDictIdbyId) {
+    const ret = {};
+    if (mode === "xfrm")
+      ret.mode = this.mode;
+    return ret;
+  }
+}
+
 export default class TunnelModel extends ObjModel {
-  constructor(id, name, type, mode, subnets, link1, link2, dev1Mode, dev2Mode,
-    getItemById) {
+  constructor(id, name, type, mode, subnets, link1, link2, dev1Params,
+    dev2Params, getItemById) {
     super(id, name, type);
     this.desc = `
 Tunnel devices implement virtual networks on top of other networks
@@ -61,8 +74,8 @@ Tunnel devices implement virtual networks on top of other networks
     this.link2 = link2;
     let ns1 = null;
     let ns2 = null;
-    this.dev1Mode = dev1Mode || XfrmTunnelModes[0].value;
-    this.dev2Mode = dev2Mode || XfrmTunnelModes[0].value;
+    this.dev1Params = dev1Params;
+    this.dev2Params = dev2Params;
     if (getItemById) {
       if (link1) {
         const o = getItemById(link1);
@@ -105,10 +118,12 @@ Tunnel devices implement virtual networks on top of other networks
       link1: link1,
       link2: link2,
     };
-    if (this.mode == 'xfrm') {
-      ret.dev1 = { mode: this.dev1Mode };
-      ret.dev2 = { mode: this.dev2Mode };
-    }
+
+    if (this.dev1Params)
+      ret.dev1 = this.dev1Params.toDict(this.mode, getDictIdbyId);
+    if (this.dev2Params)
+      ret.dev2 = this.dev2Params.toDict(this.mode, getDictIdbyId);
+
     return ret;
   }
 
@@ -126,9 +141,17 @@ Tunnel devices implement virtual networks on top of other networks
   }
 
   static fromDict(type, params) {
-    const dev1Mode = params.dev1 ? params.dev1.mode : null;
-    const dev2Mode = params.dev2 ? params.dev2.mode : null;
+    let dev1Params = null;
+    let dev2Params = null;
+    if (params.dev1) {
+      const dev = params.dev1;
+      dev1Params = new TunnelDeviceParams(dev.mode);
+    }
+    if (params.dev2) {
+      const dev = params.dev2;
+      dev2Params = new TunnelDeviceParams(dev.mode);
+    }
     return new TunnelModel(null, params.name, type, params.mode, params.subnets,
-      params.link1, params.link2, dev1Mode, dev2Mode);
+      params.link1, params.link2, dev1Params, dev2Params);
   }
 }
