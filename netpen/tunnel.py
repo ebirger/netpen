@@ -33,8 +33,13 @@ class Tunnel(TopologyMember):
     def __init__(self, topology, name, subnets, link1_dev, link2_dev,
                  dev1=None, dev2=None):
         super().__init__(topology, name)
-        dev1_ns = (dev1.get('ns') if dev1 else None) or link1_dev.ns
-        dev2_ns = (dev2.get('ns') if dev2 else None) or link2_dev.ns
+
+        dev1 = dev1 or {}
+        dev2 = dev2 or {}
+
+        dev1_ns = dev1.get('ns') or link1_dev.ns
+        dev2_ns = dev2.get('ns') or link2_dev.ns
+
         self.dev1 = NetDev(topology=topology, name=f'{name}.dev1',
                            owner=self, subnets=subnets, ns=dev1_ns,
                            noarp=self.NOARP, link=link1_dev)
