@@ -12,7 +12,8 @@ class Tunnel(TopologyMember):
         'additionalProperties': False,
         'properties': {
             'mode': {'type': 'string'},
-            'netns': {'type': 'string'}
+            'netns': {'type': 'string'},
+            'mtu': {'type': 'integer'}
         }
     }
     SCHEMA = {
@@ -42,10 +43,12 @@ class Tunnel(TopologyMember):
 
         self.dev1 = NetDev(topology=topology, name=f'{name}.dev1',
                            owner=self, subnets=subnets, ns=dev1_ns,
-                           noarp=self.NOARP, link=link1_dev)
+                           noarp=self.NOARP, link=link1_dev,
+                           mtu=dev1.get('mtu'))
         self.dev2 = NetDev(topology=topology, name=f'{name}.dev2',
                            owner=self, subnets=subnets, ns=dev2_ns,
-                           noarp=self.NOARP, link=link2_dev)
+                           noarp=self.NOARP, link=link2_dev,
+                           mtu=dev2.get('mtu'))
         self.dev1.tss[self.dev2] = subnets
         self.dev2.tss[self.dev1] = subnets
         self.link1 = link1_dev
