@@ -6,6 +6,7 @@ import TunnelModel, { TunnelTypes, XfrmTunnelModes, TunnelDeviceParams } from '.
 import { SubnetList } from './Subnet.js';
 import { L3Devices } from './NetDevParams.js';
 import { NsList } from './NetNs.js';
+import Mtu from './Mtu.js';
 import Field from './Field.js';
 import Context from '../Context.js';
 
@@ -45,14 +46,20 @@ TunnelMode.propTypes = {
 function TunnelDeviceAdvanced(props) {
   const mode = props.devParams ? props.devParams.mode : null;
   const netns = props.devParams ? props.devParams.netns : null;
+  const mtu = props.devParams ? props.devParams.mtu : null;
 
   function onTunnelModeChange(newTunnelMode) {
-    const p = new TunnelDeviceParams(newTunnelMode, netns);
+    const p = new TunnelDeviceParams(newTunnelMode, netns, mtu);
     props.onDevParamsChange(p);
   }
 
   function onNetnsChange(newNetns) {
-    const p = new TunnelDeviceParams(mode, newNetns);
+    const p = new TunnelDeviceParams(mode, newNetns, mtu);
+    props.onDevParamsChange(p);
+  }
+
+  function onMtuChange(newMtu) {
+    const p = new TunnelDeviceParams(mode, netns, newMtu);
     props.onDevParamsChange(p);
   }
 
@@ -79,6 +86,7 @@ function TunnelDeviceAdvanced(props) {
           <NsList id='netns' value={netns} onChange={onNetnsChange} />
         </Col>
       </Row>
+      <Mtu onChange={onMtuChange} value={mtu} />
     </>
   );
 }
