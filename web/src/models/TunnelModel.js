@@ -67,28 +67,38 @@ export class TunnelDeviceParams {
   }
 }
 
+export class TunnelParams {
+  constructor(params) {
+    this.mode = params.mode;
+    this.subnets = params.subnets || [];
+    this.link1 = params.link1 || '';
+    this.link2 = params.link2 || '';
+    this.dev1Params = params.dev1Params;
+    this.dev2Params = params.dev2Params;
+  }
+}
+
 export default class TunnelModel extends ObjModel {
-  constructor(id, name, type, mode, subnets, link1, link2, dev1Params,
-    dev2Params, getItemById) {
+  constructor(id, name, type, params, getItemById) {
     super(id, name, type);
     this.desc = `
 Tunnel devices implement virtual networks on top of other networks
 `;
-    this.mode = mode;
-    this.subnets = subnets;
-    this.link1 = link1;
-    this.link2 = link2;
-    let ns1 = dev1Params ? dev1Params.netns : null;
-    let ns2 = dev2Params ? dev2Params.netns : null;
-    this.dev1Params = dev1Params;
-    this.dev2Params = dev2Params;
+    this.mode = params.mode;
+    this.subnets = params.subnets;
+    this.link1 = params.link1;
+    this.link2 = params.link2;
+    let ns1 = params.dev1Params ? params.dev1Params.netns : null;
+    let ns2 = params.dev2Params ? params.dev2Params.netns : null;
+    this.dev1Params = params.dev1Params;
+    this.dev2Params = params.dev2Params;
     if (getItemById) {
-      if (!ns1 && link1) {
-        const o = getItemById(link1);
+      if (!ns1 && params.link1) {
+        const o = getItemById(params.link1);
         ns1 = o ? o.netns : null;
       }
-      if (!ns2 && link2) {
-        const o = getItemById(link2);
+      if (!ns2 && params.link2) {
+        const o = getItemById(params.link2);
         ns2 = o ? o.netns : null;
       }
     }
@@ -161,13 +171,11 @@ Tunnel devices implement virtual networks on top of other networks
   }
 
   static fromDict(type, params) {
-    let dev1Params = null;
-    let dev2Params = null;
+    const tunnelParams = {...params};
     if (params.dev1)
-      dev1Params = new TunnelDeviceParams(params.dev1);
+      tunnelParams.dev1Params = new TunnelDeviceParams(params.dev1);
     if (params.dev2)
-      dev2Params = new TunnelDeviceParams(params.dev2);
-    return new TunnelModel(null, params.name, type, params.mode, params.subnets,
-      params.link1, params.link2, dev1Params, dev2Params);
+      tunnelParams.dev2Params = new TunnelDeviceParams(params.dev2);
+    return new TunnelModel(null, params.name, type, tunnelParams);
   }
 }

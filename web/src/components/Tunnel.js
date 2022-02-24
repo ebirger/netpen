@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useContext } from 'react'
 import PropTypes from 'prop-types';
 import { Select, Divider, Button, Modal, Row, Col, Space, Typography } from 'antd';
-import TunnelModel, { TunnelTypes, XfrmTunnelModes, TunnelDeviceParams } from '../models/TunnelModel.js';
+import TunnelModel, { TunnelTypes, XfrmTunnelModes, TunnelParams, TunnelDeviceParams } from '../models/TunnelModel.js';
 import { SubnetList } from './Subnet.js';
 import { L3Devices } from './NetDevParams.js';
 import { NsList } from './NetNs.js';
@@ -120,46 +120,12 @@ TunnelAdvanced.propTypes = {
 
 export default function Tunnel(props) {
   const ctx = useContext(Context);
-  const subnets = props.item.subnets || [];
-  const link1 = props.item.link1 || '';
-  const link2 = props.item.link2 || '';
-  const dev1Params = props.item.dev1Params || null;
-  const dev2Params = props.item.dev2Params || null;
-  const {id, name, type, mode} = props.item;
+  const tunnelParams = new TunnelParams(props.item);
+  const {id, name, type} = props.item;
 
-  function setMode(newMode) {
-    const model = new TunnelModel(id, name, type, newMode, subnets,
-      link1, link2, dev1Params, dev2Params, ctx.getItemById);
-    props.onChange(model);
-  }
-
-  function setSubnets(newSubnets) {
-    const model = new TunnelModel(id, name, type, mode, newSubnets,
-      link1, link2, dev1Params, dev2Params, ctx.getItemById);
-    props.onChange(model);
-  }
-
-  function setLink1(newLink1) {
-    const model = new TunnelModel(id, name, type, mode, subnets,
-      newLink1, link2, dev1Params, dev2Params, ctx.getItemById);
-    props.onChange(model);
-  }
-
-  function setLink2(newLink2) {
-    const model = new TunnelModel(id, name, type, mode, subnets,
-      link1, newLink2, dev1Params, dev2Params, ctx.getItemById);
-    props.onChange(model);
-  }
-
-  function setDev1Params(newDev1Params) {
-    const model = new TunnelModel(id, name, type, mode, subnets,
-      link1, link2, newDev1Params, dev2Params, ctx.getItemById);
-    props.onChange(model);
-  }
-
-  function setDev2Params(newDev2Params) {
-    const model = new TunnelModel(id, name, type, mode, subnets,
-      link1, link2, dev1Params, newDev2Params, ctx.getItemById);
+  function onChange(change) {
+    const params = {...tunnelParams, ...change};
+    const model = new TunnelModel(id, name, type, params, ctx.getItemById);
     props.onChange(model);
   }
 
@@ -168,26 +134,34 @@ export default function Tunnel(props) {
       <>
         <Row>
           <Col flex="auto">
-            <TunnelMode onChange={setMode} mode={mode} />
+            <TunnelMode onChange={(mode)=>onChange({mode: mode})}
+              mode={tunnelParams.mode} />
           </Col>
           <Col flex="none">
-            <TunnelAdvanced onDev1ParamsChange={setDev1Params}
-              onDev2ParamsChange={setDev2Params}
-              dev1Params={dev1Params} dev2Params={dev2Params}
-              mode={mode} />
+            <TunnelAdvanced
+              onDev1ParamsChange={
+                (dev1Params)=>onChange({dev1Params: dev1Params})
+              }
+              onDev2ParamsChange={
+                (dev2Params)=>onChange({dev2Params: dev2Params})
+              }
+              dev1Params={tunnelParams.dev1Params}
+              dev2Params={tunnelParams.dev2Params}
+              mode={tunnelParams.mode} />
           </Col>
         </Row>
-        <SubnetList onChange={setSubnets} id="subnets" value={subnets} />
+        <SubnetList onChange={(subnets)=>onChange({subnets: subnets})}
+          id="subnets" value={tunnelParams.subnets} />
       </>
       <Divider />
       <>
         <Field title="Link1">
-          <L3Devices onChange={setLink1} id="link1" label="Underlay Device 1"
-            value={link1} />
+          <L3Devices onChange={(l1)=>onChange({link1: l1})} id="link1"
+            label="Underlay Device 1" value={tunnelParams.link1} />
         </Field>
         <Field title="Link2">
-          <L3Devices onChange={setLink2} id="link2" label="Underlay Device 2"
-            value={link2} />
+          <L3Devices onChange={(l2)=>onChange({link2: l2})} id="link2"
+            label="Underlay Device 2" value={tunnelParams.link2} />
         </Field>
       </>
     </>
