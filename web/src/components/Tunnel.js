@@ -96,12 +96,14 @@ function TunnelAdvanced(props) {
       <Modal title="Advanced" visible={advancedOpen} footer={null}
         onCancel={() => setAdvancedOpen(false)}>
         <TunnelDeviceAdvanced title="Device 1"
-          tunnelMode={props.mode} devParams={props.dev1Params}
-          onDevParamsChange={props.onDev1ParamsChange} />
+          tunnelMode={props.tunnelParams.mode}
+          devParams={props.tunnelParams.dev1Params}
+          onDevParamsChange={(p)=>props.onChange({dev1Params: p})} />
         <Divider />
         <TunnelDeviceAdvanced title="Device 2"
-          tunnelMode={props.mode} devParams={props.dev2Params}
-          onDevParamsChange={props.onDev2ParamsChange} />
+          tunnelMode={props.tunnelParams.mode}
+          devParams={props.tunnelParams.dev2Params}
+          onDevParamsChange={(p)=>props.onChange({dev2Params: p})} />
       </Modal>
       <Button onClick={() => setAdvancedOpen(true)} type="link">
         Advanced
@@ -111,11 +113,8 @@ function TunnelAdvanced(props) {
 }
 
 TunnelAdvanced.propTypes = {
-  mode: PropTypes.string.isRequired,
-  dev1Params: PropTypes.object.isRequired,
-  dev2Params: PropTypes.object.isRequired,
-  onDev1ParamsChange: PropTypes.func.isRequired,
-  onDev2ParamsChange: PropTypes.func.isRequired,
+  tunnelParams: PropTypes.object.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 export default function Tunnel(props) {
@@ -138,16 +137,7 @@ export default function Tunnel(props) {
               mode={tunnelParams.mode} />
           </Col>
           <Col flex="none">
-            <TunnelAdvanced
-              onDev1ParamsChange={
-                (dev1Params)=>onChange({dev1Params: dev1Params})
-              }
-              onDev2ParamsChange={
-                (dev2Params)=>onChange({dev2Params: dev2Params})
-              }
-              dev1Params={tunnelParams.dev1Params}
-              dev2Params={tunnelParams.dev2Params}
-              mode={tunnelParams.mode} />
+            <TunnelAdvanced onChange={onChange} tunnelParams={tunnelParams} />
           </Col>
         </Row>
         <SubnetList onChange={(subnets)=>onChange({subnets: subnets})}
