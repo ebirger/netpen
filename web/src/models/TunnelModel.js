@@ -49,10 +49,10 @@ export const XfrmTunnelModes = [
 ];
 
 export class TunnelDeviceParams {
-  constructor(mode, netns, mtu) {
-    this.mode = mode;
-    this.netns = netns;
-    this.mtu = mtu;
+  constructor(dev) {
+    this.mode = dev.mode;
+    this.netns = dev.netns;
+    this.mtu = dev.mtu;
   }
 
   toDict(mode, getDictIdbyId) {
@@ -163,14 +163,10 @@ Tunnel devices implement virtual networks on top of other networks
   static fromDict(type, params) {
     let dev1Params = null;
     let dev2Params = null;
-    if (params.dev1) {
-      const dev = params.dev1;
-      dev1Params = new TunnelDeviceParams(dev.mode, dev.netns, dev.mtu);
-    }
-    if (params.dev2) {
-      const dev = params.dev2;
-      dev2Params = new TunnelDeviceParams(dev.mode, dev.netns, dev.mtu);
-    }
+    if (params.dev1)
+      dev1Params = new TunnelDeviceParams(params.dev1);
+    if (params.dev2)
+      dev2Params = new TunnelDeviceParams(params.dev2);
     return new TunnelModel(null, params.name, type, params.mode, params.subnets,
       params.link1, params.link2, dev1Params, dev2Params);
   }

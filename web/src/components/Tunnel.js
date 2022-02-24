@@ -44,22 +44,10 @@ TunnelMode.propTypes = {
 };
 
 function TunnelDeviceAdvanced(props) {
-  const mode = props.devParams ? props.devParams.mode : null;
-  const netns = props.devParams ? props.devParams.netns : null;
-  const mtu = props.devParams ? props.devParams.mtu : null;
+  const devParams = props.devParams ? props.devParams : {};
 
-  function onTunnelModeChange(newTunnelMode) {
-    const p = new TunnelDeviceParams(newTunnelMode, netns, mtu);
-    props.onDevParamsChange(p);
-  }
-
-  function onNetnsChange(newNetns) {
-    const p = new TunnelDeviceParams(mode, newNetns, mtu);
-    props.onDevParamsChange(p);
-  }
-
-  function onMtuChange(newMtu) {
-    const p = new TunnelDeviceParams(mode, netns, newMtu);
+  function onChange(change) {
+    const p = new TunnelDeviceParams({...devParams, ...change});
     props.onDevParamsChange(p);
   }
 
@@ -75,18 +63,19 @@ function TunnelDeviceAdvanced(props) {
       {props.tunnelMode === "xfrm" ?
         <Row>
           <Col span={24}>
-            <XfrmTunnelMode title="Mode" onChange={onTunnelModeChange}
-              mode={mode} />
+            <XfrmTunnelMode title="Mode" mode={devParams.mode} />
+              onChange={(mode)=>onChange({mode: mode})}
           </Col>
         </Row> :
         []
       }
       <Row>
         <Col span={24}>
-          <NsList id='netns' value={netns} onChange={onNetnsChange} />
+          <NsList id='netns' value={devParams.netns}
+            onChange={(netns)=>onChange({netns: netns})} />
         </Col>
       </Row>
-      <Mtu onChange={onMtuChange} value={mtu} />
+      <Mtu onChange={(mtu)=>onChange({mtu: mtu})} value={devParams.mtu} />
     </>
   );
 }
