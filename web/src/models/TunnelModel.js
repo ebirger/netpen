@@ -81,6 +81,8 @@ export class TunnelParams {
 export default class TunnelModel extends ObjModel {
   constructor(id, name, type, params, getItemById) {
     super(id, name, type);
+    if (params === undefined)
+      return;
     this.desc = `
 Tunnel devices implement virtual networks on top of other networks
 `;
