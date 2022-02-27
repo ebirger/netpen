@@ -6,7 +6,7 @@ import { Redirect } from 'react-router-dom';
 import { Button, Divider } from 'antd'
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { serializeObjList } from '../models/ObjModel.js';
-import { defaultSubnet } from './Subnet.js';
+import { defaultSubnet } from '../models/SubnetModel.js';
 import PenLoader from './PenLoader.js';
 import PenList from './PenList.js';
 

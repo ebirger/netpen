@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import PropTypes from 'prop-types';
 import { Radio } from 'antd';
 import Context from '../Context.js'
-import SubnetModel from '../models/SubnetModel.js'
+import SubnetModel, { CIDRS } from '../models/SubnetModel.js'
 import Cidr from './Cidr.js'
 import ChipList from './ChipList.js';
 
@@ -20,13 +20,8 @@ SubnetList.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-const CIDRS = ["198.51.100.0/24", "10.0.0.0/24", "192.168.1.0/24"];
-
-export const defaultSubnet = new SubnetModel(null, "default", "subnet",
-  CIDRS[0]);
-
 export default function Subnet(props) {
-  const cidr = props.item.cidr || CIDRS[0];
+  const cidr = props.item.cidr;
   const {id, name, type} = props.item;
 
   function setCidr(newCidr) {
