@@ -30,6 +30,7 @@ class Tunnel(TopologyMember):
             'dev2': DEV_SCHEMA
         }
     }
+    LAST_TUN_KEY = 1
 
     def __init__(self, topology, name, subnets, link1_dev, link2_dev,
                  dev1=None, dev2=None):
@@ -53,6 +54,7 @@ class Tunnel(TopologyMember):
         self.dev2.tss[self.dev1] = subnets
         self.link1 = link1_dev
         self.link2 = link2_dev
+        self.tun_key = self._alloc_tun_key()
         key = f'{self.REF}.{self.name}'
         self.topology.members[f'{key}.dev1'] = self.dev1
         self.topology.members[f'{key}.dev2'] = self.dev2
@@ -60,6 +62,12 @@ class Tunnel(TopologyMember):
         self.topology.add_l2_dev(self.dev2)
         self.topology.add_prereq(self, self.link1)
         self.topology.add_prereq(self, self.link2)
+
+    @classmethod
+    def _alloc_tun_key(cls):
+        ret = cls.LAST_TUN_KEY
+        cls.LAST_TUN_KEY += 1
+        return ret
 
     @classmethod
     def all_subclasses(cls):
@@ -132,41 +140,22 @@ class IpIp6(IpIp):
 class VxLan(Tunnel):
     TUNNEL_MODE = 'vxlan'
     DESC = {'title': 'VXLAN based tunnel'}
-    LAST_VNI = 1
     NOARP = False
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.vni = self._alloc_vni()
         self.topology.add_l2_conn(self.dev1, self.dev2)
 
-    @classmethod
-    def _alloc_vni(cls):
-        ret = cls.LAST_VNI
-        cls.LAST_VNI += 1
-        return ret
-
     def _bash_tunnel_params(self):
-        return f'id {self.vni} dstport 0'
+        return f'id {self.tun_key} dstport 0'
 
 
 class Gre(Tunnel):
     TUNNEL_MODE = 'gre'
     DESC = {'title': 'GRE based tunnel'}
-    LAST_KEY = 1
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.key = self._alloc_key()
-
-    @classmethod
-    def _alloc_key(cls):
-        ret = cls.LAST_KEY
-        cls.LAST_KEY += 1
-        return ret
 
     def _bash_tunnel_params(self):
-        return f'key {self.key}'
+        return f'key {self.tun_key}'
 
 
 class Wireguard(Tunnel):
