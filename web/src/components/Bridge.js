@@ -19,12 +19,19 @@ export default function Bridge(props) {
 
   const disableNsChange = ports.length > 0;
 
+  function validBrPort(dev) {
+    if (dev.netns !== devparams.netns)
+      return false;
+    const elems = dev.id.split('@');
+    return elems.length !==2 || elems[1] !== id;
+  }
+
   return (
     <>
       <NetDevParams key="netdev" onChange={setDevParams} item={devparams}
         disableNsChange={disableNsChange} />
       <NetDevSet title="Ports" key="portlist" onChange={setPorts}
-        value={ports} pred={(d) => d.netns == devparams.netns} />
+        value={ports} pred={validBrPort} />
     </>
   );
 }
