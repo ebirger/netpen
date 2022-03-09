@@ -117,6 +117,12 @@ Tunnel devices implement virtual networks on top of other networks
     return [this.devparams1, this.devparams2];
   }
 
+  getL3Devs() {
+    if (!this.subnets || this.subnets.length == 0)
+      return [];
+    return [this.devparams1, this.devparams2];
+  }
+
   toDict(getDictIdbyId) {
     if (!this.mode || !this.subnets || !this.link1 || !this.link2)
       return null;

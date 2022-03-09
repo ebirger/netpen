@@ -128,6 +128,13 @@ export default function Tunnel(props) {
     props.onChange(model);
   }
 
+  function notOurTunnel(dev) {
+    if (dev.type !== "tunnel")
+      return true;
+    const elems = dev.id.split('@');
+    return elems.length !==2 || elems[1] !== id;
+  }
+
   return (
     <>
       <>
@@ -147,11 +154,13 @@ export default function Tunnel(props) {
       <>
         <Field title="Link1">
           <L3Devices onChange={(l1)=>onChange({link1: l1})} id="link1"
-            label="Underlay Device 1" value={tunnelParams.link1} />
+            label="Underlay Device 1" value={tunnelParams.link1}
+            pred={notOurTunnel} />
         </Field>
         <Field title="Link2">
           <L3Devices onChange={(l2)=>onChange({link2: l2})} id="link2"
-            label="Underlay Device 2" value={tunnelParams.link2} />
+            label="Underlay Device 2" value={tunnelParams.link2}
+            pred={notOurTunnel} />
         </Field>
       </>
     </>
