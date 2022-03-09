@@ -33,6 +33,13 @@ export class ObjModel {
     return null;
   }
 
+  getL3Devs() {
+    const l2 = this.getL2Devs();
+    if (!l2)
+      return [];
+    return l2.filter((o) => (o.subnets && o.subnets.length > 0));
+  }
+
   toDict() {
     return null;
   }
@@ -77,12 +84,10 @@ export function getL3Devs(objlist) {
   let o = [];
 
   for (const value of Object.values(objlist)) {
-    let d = value.getL2Devs();
+    const l3 = value.getL3Devs();
 
-    if (d) {
-      let has_sub = d.filter((o) => (o.subnets && o.subnets.length > 0));
-      o = o.concat(has_sub);
-    }
+    if (l3)
+      o = o.concat(l3);
   }
 
   return o;
