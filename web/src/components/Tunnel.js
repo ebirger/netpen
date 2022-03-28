@@ -63,8 +63,8 @@ function TunnelDeviceAdvanced(props) {
       {props.tunnelMode === "xfrm" ?
         <Row>
           <Col span={24}>
-            <XfrmTunnelMode title="Mode" mode={devParams.mode} />
-              onChange={(mode)=>onChange({mode: mode})}
+            <XfrmTunnelMode title="Mode" mode={devParams.mode}
+              onChange={(mode)=>onChange({mode: mode})} />
           </Col>
         </Row> :
         []
