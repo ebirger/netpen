@@ -12,17 +12,15 @@ class TopologyMember():
     REF = None
     DESC = None
     SCHEMA = None
-    LAST_ALLOCATED_IDX = 0
 
     @classmethod
     def dev_pfx(cls):
         return cls.DEV_PFX or cls.REF
 
-    @classmethod
-    def alloc_name(cls):
-        ret = f'{cls.dev_pfx()}{cls.LAST_ALLOCATED_IDX}'
-        cls.LAST_ALLOCATED_IDX += 1
-        return ret
+    def alloc_name(self):
+        idx = self.topology.last_allocated_idx[self.REF] + 1
+        self.topology.last_allocated_idx[self.REF] = idx
+        return f'{self.dev_pfx()}{idx}'
 
     def __init__(self, topology, name=None):
         self.topology = topology
@@ -60,6 +58,7 @@ class Topology():
         self.ipam = Ipam(self)
         self.printfn = print
         self.settings = {}
+        self.last_allocated_idx = defaultdict(int)
 
     @property
     def builders(self):
