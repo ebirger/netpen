@@ -9,7 +9,7 @@ build-dev:
 .PHONY: build-dev
 
 yarn-check:
-	docker exec -it netpen-web $@ -u
+	docker exec -it netpen-web ./node_modules/.bin/$@ -u
 .PHONY: yarn-check
 
 validation-tests system-tests:
