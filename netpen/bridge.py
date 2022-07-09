@@ -15,11 +15,12 @@ class Bridge(TopologyMember):
             **NetDev.DEV_PROPS
         }
     }
+    DEV_PFX = 'br'
 
     def __init__(self, topology, name, ns, ports, dev_args=None):
         super().__init__(topology, name)
         dev_args = dev_args or {}
-        self.dev = NetDev(topology=topology, name=name, owner=self, ns=ns,
+        self.dev = NetDev(topology=topology, alias=name, owner=self, ns=ns,
                           ports=ports, **dev_args)
         key = f'{self.REF}.{self.name}'
         self.topology.members[f'{key}.dev'] = self.dev

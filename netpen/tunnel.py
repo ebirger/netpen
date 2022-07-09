@@ -42,11 +42,11 @@ class Tunnel(TopologyMember):
         dev1_ns = dev1.get('ns') or link1_dev.ns
         dev2_ns = dev2.get('ns') or link2_dev.ns
 
-        self.dev1 = NetDev(topology=topology, name=f'{name}.dev1',
+        self.dev1 = NetDev(topology=topology, alias=f'{name}.dev1',
                            owner=self, subnets=subnets, ns=dev1_ns,
                            noarp=self.NOARP, link=link1_dev,
                            mtu=dev1.get('mtu'))
-        self.dev2 = NetDev(topology=topology, name=f'{name}.dev2',
+        self.dev2 = NetDev(topology=topology, alias=f'{name}.dev2',
                            owner=self, subnets=subnets, ns=dev2_ns,
                            noarp=self.NOARP, link=link2_dev,
                            mtu=dev2.get('mtu'))
@@ -129,18 +129,21 @@ class Tunnel(TopologyMember):
 class IpIp(Tunnel):
     TUNNEL_MODE = 'ipip'
     DESC = {'title': 'IPIP based tunnel'}
+    DEV_PFX = 'ipip'
 
 
 class IpIp6(IpIp):
     TUNNEL_MODE = 'ip6tnl'
     DEV_PFX = 'ipip6'
     DESC = {'title': 'IPIP6 based tunnel'}
+    DEV_PFX = 'ip6tnl'
 
 
 class VxLan(Tunnel):
     TUNNEL_MODE = 'vxlan'
     DESC = {'title': 'VXLAN based tunnel'}
     NOARP = False
+    DEV_PFX = 'vxlan'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -153,6 +156,7 @@ class VxLan(Tunnel):
 class Gre(Tunnel):
     TUNNEL_MODE = 'gre'
     DESC = {'title': 'GRE based tunnel'}
+    DEV_PFX = 'gre'
 
     def _bash_tunnel_params(self):
         return f'key {self.tun_key}'
@@ -162,6 +166,7 @@ class Wireguard(Tunnel):
     TUNNEL_MODE = 'wireguard'
     DESC = {'title': 'Wireguard based tunnel'}
     SCHEMA = Tunnel.SCHEMA
+    DEV_PFX = 'wg'
 
     def __init__(self, topology, name, subnets, link1_dev, link2_dev,
                  dev1=None, dev2=None):
@@ -217,6 +222,7 @@ class XfrmTunnel(Xfrm, Tunnel):
     DEV_PFX = 'xfrm'
     LAST_IF_ID = 1
     LAST_MARK = 1
+    DEV_PFX = 'ipsec'
 
     def __init__(self, topology, name, subnets, link1_dev, link2_dev,
                  dev1=None, dev2=None):
@@ -296,6 +302,7 @@ class L2tp(Tunnel):
     DESC = {'title': 'L2TP based tunnel'}
     LAST_TUN_SESS_ID = 1
     NOARP = False
+    DEV_PFX = 'l2tp'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

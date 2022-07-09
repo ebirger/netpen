@@ -4,7 +4,7 @@
 import pytest
 from conftest import get_ns_addr_in_subnet, get_subnet, get_subnets
 from conftest import ping, modprobe, get_route_dev, get_xfrm_packet_counts
-from conftest import deploy_script, DEF_SUBNET_NAME, ip_cmd
+from conftest import deploy_script, DEF_SUBNET_NAME, ip_cmd, get_route_dev_alias
 from dev.tests.common.utils import gen_examples  # pylint: disable=unused-import
 from dev.tests.common.utils import deploy_yaml
 
@@ -60,11 +60,13 @@ def test_vlan(gen_examples, cleanup_nets):
     assert anet == bnet
     assert avlannet == bvlannet
 
-    assert get_route_dev('a', bincidr) == 'atob.dev1'
-    assert get_route_dev('a', bvlan) == 'atob.dev1.15'
+    assert get_route_dev_alias('a', bincidr) == 'atob.dev1'
+    link_dev = get_route_dev('a', bincidr)
+    assert get_route_dev_alias('a', bvlan) == f'{link_dev}.15'
 
-    assert get_route_dev('b', aincidr) == 'atob.dev2'
-    assert get_route_dev('b', avlan) == 'atob.dev2.15'
+    assert get_route_dev_alias('b', aincidr) == 'atob.dev2'
+    link_dev = get_route_dev('b', aincidr)
+    assert get_route_dev_alias('b', avlan) == f'{link_dev}.15'
 
     ping('a', bincidr)
     ping('a', bvlan)

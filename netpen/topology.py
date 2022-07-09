@@ -12,10 +12,17 @@ class TopologyMember():
     REF = None
     DESC = None
     SCHEMA = None
+    LAST_ALLOCATED_IDX = 0
 
     @classmethod
     def dev_pfx(cls):
         return cls.DEV_PFX or cls.REF
+
+    @classmethod
+    def alloc_name(cls):
+        ret = f'{cls.dev_pfx()}{cls.LAST_ALLOCATED_IDX}'
+        cls.LAST_ALLOCATED_IDX += 1
+        return ret
 
     def __init__(self, topology, name=None):
         self.topology = topology

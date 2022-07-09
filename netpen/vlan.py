@@ -19,11 +19,11 @@ class Vlan(TopologyMember):
 
     def __init__(self, topology, name, ns, tag, link_dev, dev_args=None):
         super().__init__(topology, name)
-        devname = f'{link_dev.name}.{tag}'
+        alias = f'{link_dev.name}.{tag}'
         dev_args = dev_args or {}
         self.tag = tag
         self.link = link_dev
-        self.dev = NetDev(topology=topology, name=devname, owner=self, ns=ns,
+        self.dev = NetDev(topology=topology, alias=alias, owner=self, ns=ns,
                           link=self.link, **dev_args)
         key = f'{self.REF}.{self.name}'
         self.topology.members[f'{key}.dev'] = self.dev

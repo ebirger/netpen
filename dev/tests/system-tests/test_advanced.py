@@ -5,6 +5,7 @@ import subprocess
 import pytest
 from conftest import get_ns_addr_in_subnet, get_subnets, deploy_script
 from conftest import ping, modprobe, ip_cmd, get_subnet, DEF_SUBNET_NAME
+from conftest import get_devname_by_alias
 from dev.tests.common.utils import gen_examples  # pylint: disable=unused-import
 
 
@@ -49,7 +50,8 @@ def test_xdp(gen_examples, cleanup_nets):
         ping('xdp1', xdp2incidr)
 
     # remove XDP dropper
-    ip_cmd('xdp1', 'link', 'set', 'dev', 'veth1.dev1', 'xdp', 'off',
+    dev = get_devname_by_alias('xdp1', 'veth1.dev1')
+    ip_cmd('xdp1', 'link', 'set', 'dev', dev, 'xdp', 'off',
            use_json=False)
 
     # should work now

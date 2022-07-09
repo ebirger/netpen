@@ -18,8 +18,8 @@ class Dummy(TopologyMember):
     def __init__(self, topology, name, ns, dev_args=None):
         super().__init__(topology, name)
         dev_args = dev_args or {}
-        self.dev = NetDev(topology=topology, name=self.name, owner=self, ns=ns,
-                          **dev_args)
+        self.dev = NetDev(topology=topology, alias=self.name, owner=self,
+                          ns=ns, **dev_args)
         key = f'{self.REF}.{self.name}'
         self.topology.members[f'{key}.dev'] = self.dev
         self.topology.add_l2_dev(self.dev)

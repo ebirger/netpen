@@ -33,10 +33,11 @@ class NetDev():
         d1.peer = d2
         d2.peer = d1
 
-    def __init__(self, topology, name, owner, ns, **kwargs):
+    def __init__(self, topology, alias, owner, ns, **kwargs):
         self.topology = topology
-        self.name = name
         self.owner = owner
+        self.name = owner.alloc_name()
+        self.alias = alias
         self.ns = ns
         self.ns.add_dev(self)
         self.mtu = kwargs.get('mtu')
@@ -114,6 +115,9 @@ class NetDev():
         if self.link and self.link.ns != self.ns:
             self.p(f'ip -net {self.link.ns.name} link set {self.name} '
                    f'netns {self.ns.name}')
+
+        self.p(f'ip -net {self.ns.name} link set {self.name} '
+               f'alias {self.alias}')
 
         self.render_bash_set_state('up')
         if self.mtu:

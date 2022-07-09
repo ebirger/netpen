@@ -21,7 +21,7 @@ class Vrf(TopologyMember):
                  dev_args=None):
         super().__init__(topology, name)
         dev_args = dev_args or {}
-        self.dev = NetDev(topology=topology, name=name, owner=self, ns=ns,
+        self.dev = NetDev(topology=topology, alias=name, owner=self, ns=ns,
                           ports=members, **dev_args)
         self._default_unreach = default_unreach
         self._vrf_id = ns.add_vrf(self)
@@ -58,8 +58,8 @@ class Vrf(TopologyMember):
                f'type {self.REF} table {self._vrf_id}')
 
         if self._default_unreach:
-            self.p(f'ip -net {ns_name} route add vrf {self.name} unreachable '
-                   f'default metric 4278198272')
+            self.p(f'ip -net {ns_name} route add vrf {self.dev.name} '
+                   f'unreachable default metric 4278198272')
 
         self.dev.render_bash()
 

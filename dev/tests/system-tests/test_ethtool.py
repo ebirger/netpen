@@ -2,7 +2,7 @@
 # pylint: disable=unused-argument
 # pylint: disable=unbalanced-tuple-unpacking
 import pytest
-from conftest import ns_cmd
+from conftest import ns_cmd, get_devname_by_alias
 from dev.tests.common.utils import deploy_yaml
 
 
@@ -48,7 +48,8 @@ items:
 
     deploy_yaml(t)
 
-    def _get_feature(ns, dev):
+    def _get_feature(ns, alias):
+        dev = get_devname_by_alias(ns, alias)
         output = ns_cmd(ns, 'ethtool', '-k', dev).stdout.decode()
         s = next((line for line in output.split('\n') if featurek in line))
         return s.split(':')[1].strip()

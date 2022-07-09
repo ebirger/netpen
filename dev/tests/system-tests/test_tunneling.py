@@ -2,7 +2,7 @@
 # pylint: disable=unused-argument
 import pytest
 from conftest import get_ns_addr_in_subnet, get_subnet, deploy_script
-from conftest import ping, get_route_dev, get_xfrm_packet_counts, modprobe
+from conftest import ping, get_route_dev_alias, get_xfrm_packet_counts, modprobe
 from conftest import load_example
 from dev.tests.common.utils import gen_examples  # pylint: disable=unused-import
 from dev.tests.common.utils import netpen_yaml_to_bash
@@ -49,8 +49,8 @@ def test_tunnel(name, overlay, z1, z2, dev, is_l3, check_xfrm, modules,
         assert get_xfrm_packet_counts(z1) == [2, 2]
         assert get_xfrm_packet_counts(z2) == [2, 2]
 
-    assert get_route_dev(z1, z2incidr) == f'{dev}.dev1'
-    assert get_route_dev(z2, z1incidr) == f'{dev}.dev2'
+    assert get_route_dev_alias(z1, z2incidr) == f'{dev}.dev1'
+    assert get_route_dev_alias(z2, z1incidr) == f'{dev}.dev2'
 
 
 @pytest.mark.parametrize('name,overlay,z1,z2,dev,is_l3,check_xfrm,modules',
@@ -90,5 +90,5 @@ def test_tunnel_different_ns(name, overlay, z1, z2, dev, is_l3, check_xfrm,
         assert get_xfrm_packet_counts(z1) == [2, 2]
         assert get_xfrm_packet_counts(z2) == [2, 2]
 
-    assert get_route_dev(different_ns, z2incidr) == f'{dev}.dev1'
-    assert get_route_dev(z2, diffnsincidr) == f'{dev}.dev2'
+    assert get_route_dev_alias(different_ns, z2incidr) == f'{dev}.dev1'
+    assert get_route_dev_alias(z2, diffnsincidr) == f'{dev}.dev2'

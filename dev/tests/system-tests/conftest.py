@@ -93,6 +93,16 @@ def get_route_dev(ns, dst):
     return ip_cmd(ns, 'route', 'get', dst)[0]['dev']
 
 
+def get_route_dev_alias(ns, dst):
+    dev = get_route_dev(ns, dst)
+    return ip_cmd(ns, 'link', 'show', 'dev', dev)[0]['ifalias']
+
+
+def get_devname_by_alias(ns, alias):
+    devs = ip_cmd(ns, 'link', 'show')
+    return next(dev['ifname'] for dev in devs if dev.get('ifalias') == alias)
+
+
 def get_xfrm_packet_counts(ns):
     # ip xfrm doesn't support json yet so have to parse this ugliness
     state = ip_cmd(ns, '-s', 'xfrm', 'state', use_json=False).decode()

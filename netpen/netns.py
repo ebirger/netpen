@@ -114,6 +114,7 @@ class NetNs(TopologyMember):
     def render_table_row(self):
         def _render_dev(d):
             if d.addrs:
-                return '\n'.join((f'{a} ({d.name})' for a in d.addrs))
-            return d.name
+                return '\n'.join((f'{a} - {d.name} ({d.alias}))'
+                                 for a in d.addrs))
+            return f'{d.name} ({d.alias})'
         return [self.name, '\n'.join(_render_dev(d) for d in self._devs)]

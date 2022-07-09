@@ -21,9 +21,9 @@ class Veth(TopologyMember):
         super().__init__(topology, name)
         dev1_args = dev1_args or {}
         dev2_args = dev2_args or {}
-        self.dev1 = NetDev(topology=topology, name=f'{name}.dev1',
+        self.dev1 = NetDev(topology=topology, alias=f'{name}.dev1',
                            owner=self, ns=ns1, **dev1_args)
-        self.dev2 = NetDev(topology=topology, name=f'{name}.dev2',
+        self.dev2 = NetDev(topology=topology, alias=f'{name}.dev2',
                            owner=self, ns=ns2, **dev2_args)
         NetDev.set_peers(self.dev1, self.dev2)
         key = f'{self.REF}.{self.name}'

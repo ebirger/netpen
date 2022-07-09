@@ -21,7 +21,7 @@ class Team(TopologyMember):
     def __init__(self, topology, name, ns, ports, mode, dev_args=None):
         super().__init__(topology, name)
         dev_args = dev_args or {}
-        self.dev = NetDev(topology=topology, name=name, owner=self, ns=ns,
+        self.dev = NetDev(topology=topology, alias=name, owner=self, ns=ns,
                           ports=ports, **dev_args)
         self.mode = mode
         for p in self.dev.ports:
