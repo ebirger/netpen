@@ -2,7 +2,7 @@
 
 [![System Tests](https://github.com/ebirger/netpen/actions/workflows/system-tests.yml/badge.svg)](https://github.com/ebirger/netpen/actions/workflows/system-tests.yml)
 [![Validation Tests](https://github.com/ebirger/netpen/actions/workflows/validation-tests.yml/badge.svg)](https://github.com/ebirger/netpen/actions/workflows/validation-tests.yml)
-[![Web Tests](https://github.com/ebirger/netpen/actions/workflows/web-tests.yml/badge.svg)](https://github.com/ebirger/netpen/actions/workflows/web-tests.yml)
+[![Web Tests](https://github.com/ebirger/netpen/actions/workflows/web-tests.yml/badge.svg)](https://github.com/ebirger/netpen/actions/workflows/web-tests.yml) [![Join the chat at https://gitter.im/netpen-io/community](https://badges.gitter.im/netpen-io/community.svg)](https://gitter.im/netpen-io/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Visual editor and API for network environments script generation
 
