@@ -6,6 +6,7 @@ import Settings from './Settings.js';
 import Share from './Share.js'
 import DownloadButton from './DownloadButton.js';
 import AboutButton from './AboutButton.js';
+import Preview from './Preview.js';
 import { serializeObjList } from '../models/ObjModel.js';
 
 export default function ToolbarButtons(props) {
@@ -25,6 +26,7 @@ export default function ToolbarButtons(props) {
   return (
     <Space className="right">
       {copyButton}
+      <Preview type="primary" getData={getData}/>
       <Share settings={props.settings} items={props.objlist} />
       <Settings onChange={props.onSettingsChange} settings={props.settings} />
       <DownloadButton type="primary" getData={getData} />

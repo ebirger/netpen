@@ -4,6 +4,7 @@ import { Button, Row, Col, Card, Typography, Divider } from 'antd';
 import { EditOutlined, EyeOutlined, DeleteOutlined, CopyOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import DownloadButton from './DownloadButton.js';
+import Preview from './Preview.js';
 
 const { Title } = Typography;
 
@@ -39,6 +40,7 @@ function PenCard(props) {
         <Button onClick={onCopy} icon={<CopyOutlined />}>
           Copy
         </Button> : <span />}
+      <Preview getData={(cb) => { props.getById(props.path, cb); }} />
       <DownloadButton getData={(cb) => { props.getById(props.path, cb); }} />
       {props.onDelete ?
         <Button onClick={onDelete} icon={<DeleteOutlined />}>
