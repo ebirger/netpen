@@ -18,7 +18,6 @@ class EbpfProg(TopologyMember):
     def __init__(self, topology, name, code):
         super().__init__(topology, name)
         self.code = code
-        self._bash_ebpf_dirname_var = f'{self.name}_ebpf_dirname'
         self.bash_ebpf_var = f'{self.name}_ebpf_dst'
 
     @classmethod
@@ -26,11 +25,14 @@ class EbpfProg(TopologyMember):
         return cls(topology, params['name'], params['code'])
 
     def render_bash(self):
-        dirname_var = self._bash_ebpf_dirname_var
+        dirname_var = f'{self.name}_ebpf_dirname'
+        src_var = f'{self.name}_ebpf_src'
+        obj_var = self.bash_ebpf_var
+
         self.p(f'{dirname_var}=$(mktemp -d)')
-        self.p(f'{self.name}_ebpf_src="${dirname_var}/{self.name}.c"')
-        self.p(f'{self.bash_ebpf_var}="${dirname_var}/{self.name}.bpf.o"')
-        self.p(f'cat > "${self.name}_ebpf_src" << "EOF"')
+        self.p(f'{src_var}="${dirname_var}/{self.name}.c"')
+        self.p(f'{obj_var}="${dirname_var}/{self.name}.bpf.o"')
+        self.p(f'cat > "${src_var}" << "EOF"')
         self.p(self.code)
         self.p('EOF\n\n')
 
@@ -38,14 +40,14 @@ class EbpfProg(TopologyMember):
                f'  -idirafter /usr/include/x86_64-linux-gnu \\\n'
                f'  -D__TARGET_ARCH_x86 \\\n'
                f'  -Wno-compare-distinct-pointer-types \\\n'
-               f'  -c "${self.name}_ebpf_src" \\\n'
+               f'  -c "${src_var}" \\\n'
                f'  -target bpf \\\n'
                f'  -mcpu=v3 \\\n'
                f'  -O2 \\\n'
                f'  -mlittle-endian \\\n'
-               f'  -o "${self.bash_ebpf_var}"')
+               f'  -o "${obj_var}"')
 
-        self.p(f'echo Built "${self.bash_ebpf_var}"')
+        self.p(f'echo Built "${obj_var}"')
 
     @property
     def dotname(self):
