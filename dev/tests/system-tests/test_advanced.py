@@ -35,7 +35,6 @@ def test_vrf(gen_examples, cleanup_nets):
     ping('d', cinblue)
 
 
-@pytest.mark.skipif(not modprobe('kheaders'), reason='Missing kheaders support')
 def test_xdp(gen_examples, cleanup_nets):
     EXAMPLE_NAME = 'xdp'
 
