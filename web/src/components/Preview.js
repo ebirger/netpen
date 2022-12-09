@@ -9,6 +9,7 @@ const bashUrl = API_BASE + 'v1/bash';
 
 export default function Preview(props) {
   const [open, setOpen] = React.useState(false);
+  const [lastVal, setLastVal] = React.useState(undefined);
   const editorRef = React.useRef(null);
   const editorOpts = {readOnly: true, minimap: {enabled: false},
     lineNumbers: false, renderWhitespace: "none", folding: false,
@@ -16,6 +17,8 @@ export default function Preview(props) {
 
   function handleEditorDidMount(editor) {
     editorRef.current = editor;
+    if (lastVal)
+      editorRef.current.setValue(lastVal);
   }
 
   function getBash(data) {
@@ -27,8 +30,12 @@ export default function Preview(props) {
 
     fetch(bashUrl, requestMetadata).then(res => res.text())
       .then(o => {
-        if (editorRef)
+        if (editorRef && editorRef.current) {
           editorRef.current.setValue(o);
+          setLastVal(undefined);
+        } else {
+          setLastVal(o);
+        }
       });
   }
 
