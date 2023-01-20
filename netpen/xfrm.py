@@ -24,34 +24,30 @@ class Xfrm():
         return hex(random.getrandbits(160))
 
     def _render_bash_xfrm_state(self, ns, src, dst, spi, if_id=None):
-        params = dict(ns=ns, src=src, dst=dst, spi=spi, mode=self.MODE)
-        params['if_id'] = f'if_id {if_id}' if if_id else ''
-        params['key_aead'] = self._key
+        if_id = f'if_id {if_id}' if if_id else ''
         if self.MODE == 'tunnel':
-            params['sel'] = 'flag af-unspec'
+            sel = 'flag af-unspec'
         else:
-            params['sel'] = f'sel src "{src}" dst "{dst}"'
-        self.p('''
-ip -net "%(ns)s" xfrm state add src "%(src)s" dst "%(dst)s" \\
-    spi "%(spi)s" proto esp aead 'rfc4106(gcm(aes))' \\
-    "%(key_aead)s" 128 mode %(mode)s %(if_id)s \\
-    %(sel)s''' % params)
+            sel = f'sel src "{src}" dst "{dst}"'
+        self.p(f'''
+ip -net "{ns}" xfrm state add src "{src}" dst "{dst}" \\
+    spi "{spi}" proto esp aead 'rfc4106(gcm(aes))' \\
+    "{self._key}" 128 mode {self.MODE} {if_id} \\
+    {sel}''')
 
     def _render_bash_xfrm_policy(self, ns, direc, src, dst, tmpl_src, tmpl_dst,
                                  if_id=None, mark=None):
-        params = dict(ns=ns, direc=direc, src=src, dst=dst, tmpl_src=tmpl_src,
-                      tmpl_dst=tmpl_dst, mode=self.MODE)
         if if_id:
-            params['disc'] = f'if_id {if_id}'
+            disc = f'if_id {if_id}'
         elif mark:
-            params['disc'] = f'mark {mark}'
+            disc = f'mark {mark}'
         else:
-            params['disc'] = ''
-        self.p('''
-ip -net "%(ns)s" xfrm policy add dir %(direc)s \\
-    src "%(src)s" dst "%(dst)s" \\
-    tmpl src "%(tmpl_src)s" dst "%(tmpl_dst)s" proto esp mode %(mode)s %(disc)s
-''' % params)
+            disc = ''
+        self.p(f'''
+ip -net "{ns}" xfrm policy add dir {direc} \\
+    src "{src}" dst "{dst}" \\
+    tmpl src "{tmpl_src}" dst "{tmpl_dst}" proto esp mode {self.MODE} {disc}
+''')
 
     def _render_bash_xfrm_policies(self, ns, overlay_local, overlay_remote,
                                    local_ip, remote_ip, if_id=None, mark=None):
