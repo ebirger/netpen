@@ -7,16 +7,25 @@ from .topology import TopologyMember
 class Xfrm():
     XFRM_PARAMS = namedtuple('XFRM_PARAMS', 'link addrs spi if_id mark')
     LAST_SPI = 1
+    LAST_ENCAP_PORT = 4500
     MODE = 'tunnel'
 
-    def __init__(self, xparams1, xparams2):
+    def __init__(self, xparams1, xparams2, encap=None):
         self._xparams1 = xparams1
         self._xparams2 = xparams2
         self._key = self._gen_key()
+        self._encap = encap
+        if encap:
+            self._encap_port = self._alloc_encap_port()
 
     def _alloc_spi(self):
         ret = self.LAST_SPI
         self.LAST_SPI += 1
+        return ret
+
+    def _alloc_encap_port(self):
+        ret = self.LAST_ENCAP_PORT
+        self.LAST_ENCAP_PORT += 1
         return ret
 
     @staticmethod
@@ -29,11 +38,16 @@ class Xfrm():
             sel = 'flag af-unspec'
         else:
             sel = f'sel src "{src}" dst "{dst}"'
+        if self._encap:
+            port = self._encap_port
+            encap = f'encap espinudp {port} {port} 0.0.0.0'
+        else:
+            encap = ''
         self.p(f'''
 ip -net "{ns}" xfrm state add src "{src}" dst "{dst}" \\
     spi "{spi}" proto esp aead 'rfc4106(gcm(aes))' \\
     "{self._key}" 128 mode {self.MODE} {if_id} \\
-    {sel}''')
+    {sel} {encap}''')
 
     def _render_bash_xfrm_policy(self, ns, direc, src, dst, tmpl_src, tmpl_dst,
                                  if_id=None, mark=None):
@@ -73,6 +87,17 @@ ip -net "{ns}" xfrm policy add dir {direc} \\
         for overlay_local, overlay_remote in all_tss:
             self._render_bash_xfrm_policies(ns, overlay_local, overlay_remote,
                                             local_ip, remote_ip, if_id, mark)
+
+        if self._encap:
+            self.p(f'''
+# UDP encapsulation requires a socket, use python
+ip netns exec {ns} python -c "import socket;import signal;\\
+s=socket.socket(socket.AF_INET, socket.SOCK_DGRAM, 0);\\
+s.bind(('0.0.0.0', {self._encap_port}));\\
+UDP_ENCAP = 100;
+UDP_ENCAP_ESPINUDP = 2;
+s.setsockopt(socket.SOL_UDP, UDP_ENCAP, UDP_ENCAP_ESPINUDP);
+signal.pause()  # wait forever" &\n''')
 
     def render_bash(self):
         if self.MODE == 'tunnel':

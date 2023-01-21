@@ -23,6 +23,7 @@ class Tunnel(TopologyMember):
         'properties': {
             'name': {'type': 'string'},
             'mode': {'type': 'string'},
+            'encap': {'type': 'string', 'enum': ['udp']},
             'subnets': {'type': 'array', 'items': {'type': 'string'}},
             'link1': {'type': 'string'},
             'link2': {'type': 'string'},
@@ -33,7 +34,7 @@ class Tunnel(TopologyMember):
     LAST_TUN_KEY = 1
 
     def __init__(self, topology, name, subnets, link1_dev, link2_dev,
-                 dev1=None, dev2=None):
+                 dev1=None, dev2=None, **_kwargs):
         super().__init__(topology, name)
 
         dev1 = dev1 or {}
@@ -96,8 +97,11 @@ class Tunnel(TopologyMember):
             if d and (ns := d.get('netns')):
                 d['ns'] = topology.members[ns]
 
+        extra_params = {}
+        if 'encap' in params:
+            extra_params['encap'] = params['encap']
         return ctor(topology, params['name'], subnets, link1, link2, dev1,
-                    dev2)
+                    dev2, **extra_params)
 
     def _bash_tunnel_params(self):
         pass
@@ -169,9 +173,9 @@ class Wireguard(Tunnel):
     DEV_PFX = 'wg'
 
     def __init__(self, topology, name, subnets, link1_dev, link2_dev,
-                 dev1=None, dev2=None):
+                 dev1=None, dev2=None, **kwargs):
         Tunnel.__init__(self, topology, name, subnets, link1_dev, link2_dev,
-                        dev1, dev2)
+                        dev1, dev2, **kwargs)
 
         self.addrs = [s.cidr for s in subnets]
 
@@ -225,7 +229,7 @@ class XfrmTunnel(Xfrm, Tunnel):
     DEV_PFX = 'ipsec'
 
     def __init__(self, topology, name, subnets, link1_dev, link2_dev,
-                 dev1=None, dev2=None):
+                 dev1=None, dev2=None, encap=None):
 
         Tunnel.__init__(self, topology, name, subnets, link1_dev, link2_dev,
                         dev1, dev2)
@@ -248,7 +252,7 @@ class XfrmTunnel(Xfrm, Tunnel):
                                     spi=self._alloc_spi(), if_id=dev2_if_id,
                                     mark=dev2_mark)
 
-        Xfrm.__init__(self, xparams1, xparams2)
+        Xfrm.__init__(self, xparams1, xparams2, encap)
 
     def _alloc_keys(self, mode):
         if_id = None

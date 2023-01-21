@@ -1,0 +1,41 @@
+settings:
+  title: XFRMI UDP Encap
+
+items:
+  - subnet:
+      name: red
+      cidr: 198.51.100.0/24
+
+  - subnet:
+      name: green
+      cidr: 10.0.0.0/24
+
+  - netns:
+      name: alice
+
+  - netns:
+      name: bob
+
+  - veth:
+      name: alicetobob
+      dev1:
+        netns: netns.alice
+        subnets:
+          - subnet.red
+      dev2:
+        netns: netns.bob
+        subnets:
+          - subnet.red
+
+  - tunnel:
+      name: safe
+      mode: xfrm
+      encap: udp
+      subnets:
+        - subnet.green
+      link1: veth.alicetobob.dev1
+      link2: veth.alicetobob.dev2
+      dev1:
+        mode: xfrm
+      dev2:
+        mode: xfrm
