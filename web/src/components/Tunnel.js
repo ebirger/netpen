@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useContext } from 'react'
 import PropTypes from 'prop-types';
-import { Select, Divider, Button, Modal, Row, Col, Space, Typography } from 'antd';
+import { Select, Divider, Button, Modal, Row, Col, Space, Typography, Checkbox } from 'antd';
 import TunnelModel, { TunnelTypes, XfrmTunnelModes, TunnelParams, TunnelDeviceParams } from '../models/TunnelModel.js';
 import { SubnetList } from './Subnet.js';
 import { L3Devices } from './NetDevParams.js';
@@ -90,11 +90,26 @@ TunnelDeviceAdvanced.propTypes = {
 
 function TunnelAdvanced(props) {
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  const encap = props.tunnelParams.encap || false;
+
+  function setEncap(ev) {
+    const newEncap = ev.target.checked;
+    props.onChange({encap: newEncap});
+  }
 
   return (
     <>
       <Modal title="Advanced" visible={advancedOpen} footer={null}
         onCancel={() => setAdvancedOpen(false)}>
+        {props.tunnelParams.mode === "xfrm" ?
+          <>
+            <Checkbox checked={encap} onChange={setEncap}>
+              UDP Encapsulation
+            </Checkbox>
+            <Divider />
+          </> :
+          []
+        }
         <TunnelDeviceAdvanced title="Device 1"
           tunnelMode={props.tunnelParams.mode}
           devParams={props.tunnelParams.dev1Params}

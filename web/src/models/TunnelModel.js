@@ -71,6 +71,7 @@ export class TunnelParams {
   constructor(params) {
     this.mode = params.mode;
     this.subnets = params.subnets || [];
+    this.encap = params.encap;
     this.link1 = params.link1 || '';
     this.link2 = params.link2 || '';
     this.dev1Params = params.dev1Params;
@@ -90,6 +91,7 @@ Tunnel devices implement virtual networks on top of other networks
     this.subnets = params.subnets;
     this.link1 = params.link1;
     this.link2 = params.link2;
+    this.encap = params.encap;
     let ns1 = params.dev1Params ? params.dev1Params.netns : null;
     let ns2 = params.dev2Params ? params.dev2Params.netns : null;
     this.dev1Params = params.dev1Params;
@@ -141,6 +143,9 @@ Tunnel devices implement virtual networks on top of other networks
       link2: link2,
     };
 
+    if (this.encap)
+      ret.encap = "udp";
+
     if (this.dev1Params)
       ret.dev1 = this.dev1Params.toDict(this.mode, getDictIdbyId);
     if (this.dev2Params)
@@ -184,6 +189,8 @@ Tunnel devices implement virtual networks on top of other networks
       tunnelParams.dev1Params = new TunnelDeviceParams(params.dev1);
     if (params.dev2)
       tunnelParams.dev2Params = new TunnelDeviceParams(params.dev2);
+    if (params.encap === "udp")
+      tunnelParams.encap = true;
     return new TunnelModel(null, params.name, type, tunnelParams);
   }
 }
