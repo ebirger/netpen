@@ -68,8 +68,8 @@ def test_tunnel_different_ns(name, overlay, z1, z2, dev, is_l3, check_xfrm,
 
     # move one of the tunnel devices to a different ns
     t = next(i['tunnel'] for i in y['items'] if 'tunnel' in i)
-    t['dev1'] = dict(netns=f'netns.{different_ns}')
-    y['items'].append(dict(netns=dict(name=different_ns)))
+    t['dev1'] = {'netns': f'netns.{different_ns}'}
+    y['items'].append({'netns': {'name': different_ns}})
 
     script = f'{name}_{different_ns}.sh'
     netpen_yaml_to_bash(y, script)
