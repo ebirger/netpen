@@ -52,12 +52,18 @@ export class ObjModel {
 export function serializeObjList(objlist) {
   let items = [];
 
+  function isValid(obj) {
+    return !!obj.toDict(getDictIdbyId);
+  }
+
   function getDictIdbyId(id) {
     const elems = id.split('@');
-    if (elems.length == 1)
-      return objlist[id] ? objlist[id].dictId() : null;
+    if (elems.length == 1) {
+      const o = objlist[id];
+      return o && isValid(o) ? o.dictId() : null;
+    }
     let base = objlist[elems[1]];
-    if (!base)
+    if (!base || !isValid(base))
       return null;
     base = base.dictId()
     return `${base}.${elems[0]}`;
