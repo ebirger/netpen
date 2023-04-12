@@ -54,6 +54,15 @@ def ip_cmd(ns, *args, use_json=True):
     return json.loads(o.stdout) if use_json else o.stdout
 
 
+def tc_cmd(ns, *args, use_json=True):
+    cmd = ['sudo', 'tc']
+    if use_json:
+        cmd += ['-j']
+    cmd += ['-net', ns] + list(args)
+    o = subprocess.run(cmd, check=True, capture_output=True)
+    return json.loads(o.stdout) if use_json else o.stdout
+
+
 def get_ns_addrs(ns):
     addrs_raw = ip_cmd(ns, 'address')
     return [f'{a["local"]}/{a["prefixlen"]}'

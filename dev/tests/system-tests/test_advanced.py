@@ -5,7 +5,7 @@ import subprocess
 import pytest
 from conftest import get_ns_addr_in_subnet, get_subnets, deploy_script
 from conftest import ping, modprobe, ip_cmd, get_subnet, DEF_SUBNET_NAME
-from conftest import get_devname_by_alias
+from conftest import get_devname_by_alias, tc_cmd
 from dev.tests.common.utils import gen_examples  # pylint: disable=unused-import
 
 
@@ -55,6 +55,50 @@ def test_xdp(gen_examples, cleanup_nets):
 
     # should work now
     ping('xdp1', xdp2incidr)
+
+
+def test_ebpf_tc_ingress(gen_examples, cleanup_nets):
+    EXAMPLE_NAME = 'ebpf_tc_ingress'
+
+    deploy_script(f'{EXAMPLE_NAME}.sh')
+
+    subnet = get_subnet(EXAMPLE_NAME, DEF_SUBNET_NAME)
+
+    tc2incidr, _ = get_ns_addr_in_subnet('tc2', subnet)
+
+    # should fail as tc program drops all traffix
+    with pytest.raises(subprocess.CalledProcessError):
+        ping('tc1', tc2incidr)
+
+    # remove TC dropper
+    dev = get_devname_by_alias('tc1', 'veth1.dev1')
+    tc_cmd('tc1', 'filter', 'del', 'dev', dev, 'ingress', 'prio', '1',
+           use_json=False)
+
+    # should work now
+    ping('tc1', tc2incidr)
+
+
+def test_ebpf_tc_egress(gen_examples, cleanup_nets):
+    EXAMPLE_NAME = 'ebpf_tc_egress'
+
+    deploy_script(f'{EXAMPLE_NAME}.sh')
+
+    subnet = get_subnet(EXAMPLE_NAME, DEF_SUBNET_NAME)
+
+    tc2incidr, _ = get_ns_addr_in_subnet('tc2', subnet)
+
+    # should fail as tc program drops all traffix
+    with pytest.raises(subprocess.CalledProcessError):
+        ping('tc1', tc2incidr)
+
+    # remove TC dropper
+    dev = get_devname_by_alias('tc1', 'veth1.dev1')
+    tc_cmd('tc1', 'filter', 'del', 'dev', dev, 'egress', 'prio', '1',
+           use_json=False)
+
+    # should work now
+    ping('tc1', tc2incidr)
 
 
 def test_vxlan_bridge(gen_examples, cleanup_nets):

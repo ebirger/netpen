@@ -1,0 +1,41 @@
+settings:
+  title: eBPF TC Ingress
+
+items:
+  - subnet:
+      name: default
+      cidr: 198.51.100.0/24
+
+  - netns:
+      name: tc1
+
+  - netns:
+      name: tc2
+
+  - ebpfprog:
+      name: prog1
+      code: |
+        #include <linux/bpf.h>
+        #include <linux/pkt_cls.h>
+        
+        #define SEC(NAME) __attribute__((section(NAME), used))
+
+        SEC("tc")
+        int dropper(struct __sk_buff *skb) {
+          return TC_ACT_SHOT;
+        }
+
+        char __license[] SEC("license") = "Dual MIT/GPL";
+
+  - veth:
+      name: veth1
+      dev1:
+        netns: netns.tc1
+        subnets:
+          - subnet.default
+        tc:
+          ingress_prog: ebpfprog.prog1
+      dev2:
+        netns: netns.tc2
+        subnets:
+          - subnet.default

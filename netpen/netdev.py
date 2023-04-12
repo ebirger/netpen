@@ -19,7 +19,14 @@ class NetDev():
         'subnets': {'type': 'array', 'items': {'type': 'string'}},
         'mtu': {'type': 'integer'},
         'ethtool': {'type': 'object'},
-        'xdp': {'type': 'string'}
+        'xdp': {'type': 'string'},
+        'tc': {
+            'type': 'object',
+            'properties': {
+                'ingress_prog': {'type': 'string'},
+                'egress_prog': {'type': 'string'}
+            }
+        }
     }
     SCHEMA = {
         'type': 'object',
@@ -54,6 +61,7 @@ class NetDev():
         self.noarp = kwargs.get('noarp') or False
         self.ethtool = kwargs.get('ethtool') or {}
         self.xdp = kwargs.get('xdp')
+        self.tc = kwargs.get('tc')
         self.tss = {}
 
     def p(self, *args, **kwargs):
@@ -74,6 +82,8 @@ class NetDev():
         xdp = params.get('xdp')
         if xdp:
             ret['xdp'] = xdp
+        if tc := params.get('tc'):
+            ret['tc'] = tc
         return ret
 
     @property
@@ -91,6 +101,18 @@ class NetDev():
         self.addr_subnets[addr] = subnet
         self.addr_pools[addr] = pool
 
+    @property
+    def tc_ingress_prog(self):
+        if not self.tc or not (p := self.tc.get('ingress_prog')):
+            return None
+        return self.topology.members.get(p)
+
+    @property
+    def tc_egress_prog(self):
+        if not self.tc or not (p := self.tc.get('egress_prog')):
+            return None
+        return self.topology.members.get(p)
+
     def render_dot(self):
         label = f'{self.name}'
         if self.mtu:
@@ -104,9 +126,35 @@ class NetDev():
             if xdp:
                 self.p(f'{xdp.dotname} -- {self.dotname} '
                        f'[label="XDP", style=dashed]')
+        if ing_prog := self.tc_ingress_prog:
+            self.p(f'{ing_prog.dotname} -- {self.dotname} '
+                   f'[label="TC_INGRESS", style=dashed]')
+        if eg_prog := self.tc_egress_prog:
+            self.p(f'{eg_prog.dotname} -- {self.dotname} '
+                   f'[label="TC_EGRESS", style=dashed]')
 
     def render_bash_set_state(self, state):
         self.p(f'ip -net {self.ns.name} link set {self.name} {state}')
+
+    def _render_bash_tc(self):
+        ing_prog = self.tc_ingress_prog
+        eg_prog = self.tc_egress_prog
+
+        if not ing_prog and not eg_prog:
+            return
+
+        ns_name = self.ns.name
+        name = self.name
+
+        self.p(f'tc -net {ns_name} qdisc add dev {name} clsact')
+        if ing_prog:
+            prog_var = ing_prog.bash_ebpf_var
+            self.p(f'tc -net {ns_name} filter add dev {name} ingress prio 1 '
+                   f'handle 1 bpf da obj "${prog_var}" sec tc')
+        if eg_prog:
+            prog_var = eg_prog.bash_ebpf_var
+            self.p(f'tc -net {ns_name} filter add dev {name} egress prio 1 '
+                   f'handle 1 bpf da obj "${prog_var}" sec tc')
 
     def render_bash(self):
         ns_name = self.ns.name
@@ -138,5 +186,8 @@ class NetDev():
                 prog_var = xdp.bash_ebpf_var
                 self.p(f'ip -net {ns_name} link set {name} '
                        f'xdp object "${prog_var}"')
+
+        if self.tc:
+            self._render_bash_tc()
 
         self.topology.done_list.add(self)
