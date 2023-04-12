@@ -18,7 +18,7 @@ export function EbpfProgList(props) {
     value = props.value;
 
   return (
-    <Select onChange={props.onChange} options={opts}
+    <Select onChange={props.onChange} options={opts} allowClear={true}
       placeholder="eBPF Program" style={{ width: '100%' }}
       value={value} />
   );
