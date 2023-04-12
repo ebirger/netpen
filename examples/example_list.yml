@@ -60,3 +60,6 @@
 
     - name: XDP
       path: xdp.yml
+
+    - name: eBPF at TC Ingress
+      path: ebpf_tc_ingress.yml

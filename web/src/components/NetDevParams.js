@@ -77,37 +77,52 @@ NetDevSet.propTypes = {
 export default function NetDevParams(props) {
   const netns = props.item.netns || '';
   const xdp = props.item.xdp || '';
+  const tc = props.item.tc || {};
   const ethtool = props.item.ethtool || new EthtoolModel({});
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const {id, name, type, subnets, mtu} = props.item;
 
   function setSubnets(newSubnets) {
     const model = new NetDevParamsModel(id, name, type, netns, newSubnets, mtu,
-      ethtool, xdp);
+      ethtool, xdp, tc);
     props.onChange(model);
   }
 
   function setNetNs(newNetNs) {
     const model = new NetDevParamsModel(id, name, type, newNetNs, subnets, mtu,
-      ethtool, xdp);
+      ethtool, xdp, tc);
     props.onChange(model);
   }
 
   function setXdp(newXdp) {
     const model = new NetDevParamsModel(id, name, type, netns, subnets, mtu,
-      ethtool, newXdp);
+      ethtool, newXdp, tc);
+    props.onChange(model);
+  }
+
+  function setTcIngress(newTcIng) {
+    let newTc = { ...tc, tcIngress: newTcIng };
+    const model = new NetDevParamsModel(id, name, type, netns, subnets, mtu,
+      ethtool, xdp, newTc);
+    props.onChange(model);
+  }
+
+  function setTcEgress(newTcEg) {
+    let newTc = { ...tc, tcEgress: newTcEg };
+    const model = new NetDevParamsModel(id, name, type, netns, subnets, mtu,
+      ethtool, xdp, newTc);
     props.onChange(model);
   }
 
   function setEthtool(newEthtool) {
     const model = new NetDevParamsModel(id, name, type, netns, subnets, mtu,
-      newEthtool, xdp);
+      newEthtool, xdp, tc);
     props.onChange(model);
   }
 
   function setMtu(newMtu) {
     const model = new NetDevParamsModel(id, name, type, netns, subnets,
-      newMtu, ethtool, xdp);
+      newMtu, ethtool, xdp, tc);
     props.onChange(model);
   }
 
@@ -123,6 +138,14 @@ export default function NetDevParams(props) {
         <Divider />
         <Field title="XDP">
           <EbpfProgList id='xdp' value={xdp} onChange={setXdp} />
+        </Field>
+        <Field title="TC Ingress">
+          <EbpfProgList id='tc_ing' value={tc.tcIngress}
+            onChange={setTcIngress} />
+        </Field>
+        <Field title="TC Egress">
+          <EbpfProgList id='tc_eg' value={tc.tcEgress}
+            onChange={setTcEgress} />
         </Field>
       </Modal>
       <Row gutter={10}>
