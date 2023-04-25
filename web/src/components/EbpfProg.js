@@ -1,10 +1,12 @@
 import React from 'react';
-import { useContext } from 'react'
-import { Select } from 'antd';
+import { useContext, useState } from 'react'
+import { Select, Modal, Row, Col, Button, Divider } from 'antd';
+import { FormOutlined } from '@ant-design/icons';
 import Context from '../Context.js'
 import PropTypes from 'prop-types';
 import Editor from "@monaco-editor/react";
 import EbpfProgModel from '../models/EbpfProgModel.js'
+import Field from './Field.js'
 
 export function EbpfProgList(props) {
   const ctx = useContext(Context);
@@ -31,16 +33,55 @@ EbpfProgList.propTypes = {
 };
 
 export default function EbpfProg(props) {
-  const {id, name, type} = props.item;
+  const {id, name, type, code, exampleType} = props.item;
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const exampleTypes = [
+    {label: "TC", value: "tc"},
+    {label: "XDP", value: "xdp"}];
 
-  function setCode(newCode) {
-    const model = new EbpfProgModel(id, name, type, newCode);
+  function onEtChange(newType) {
+    const model = new EbpfProgModel(id, name, type, code, newType);
     props.onChange(model);
   }
 
+  function setCode(newCode) {
+    const model = new EbpfProgModel(id, name, type, newCode, exampleType);
+    props.onChange(model);
+  }
+
+  const et = exampleTypes.find((o) => o.value == exampleType);
+  const etDisabled = !props.item.isExample();
+
   return (
-    <Editor height="300px" defaultLanguage="c" value={props.item.code}
-      onChange={setCode} />
+    <>
+      <Modal title={props.item.name} visible={advancedOpen} footer={null}
+        onCancel={() => setAdvancedOpen(false)} height="100vh" width="100vw">
+        <>
+          <Field title="Example Source">
+            <Select options={exampleTypes} style={{ width: "100%" }}
+              onChange={onEtChange} disabled={etDisabled} value={et} />
+          </Field>
+          <Divider />
+          <Editor height="600px" width="100%" defaultLanguage="c"
+            value={props.item.getCode()} onChange={setCode} />
+        </>
+      </Modal>
+      <Row gutter={10}>
+        <Col flex="auto">
+          <Field title="Example Source">
+            <Select options={exampleTypes} style={{ width: "100%" }}
+              onChange={onEtChange} disabled={etDisabled} value={et} />
+          </Field>
+        </Col>
+        <Col flex="none">
+          <Button onClick={() => setAdvancedOpen(true)} icon={<FormOutlined />}
+            type="link" />
+        </Col>
+      </Row>
+      <Divider />
+      <Editor height="300px" defaultLanguage="c" value={props.item.getCode()}
+        onChange={setCode} />
+    </>
   );
 }
 
