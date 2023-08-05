@@ -1,5 +1,5 @@
 prettytable
-jsonschema
+jsonschema==4.17.3
 art
 networkx
 pyyaml
