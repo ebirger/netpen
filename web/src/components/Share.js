@@ -1,9 +1,7 @@
 import React from 'react'
-import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Button, message } from 'antd';
 import { LinkOutlined } from '@ant-design/icons';
-import parse from 'url-parse';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import PenLoader from './PenLoader.js';
 import { CopyToPersonalPens } from './PersonalPens.js';
@@ -34,8 +32,9 @@ export default function Share(props) {
 
   function shareUrl() {
     const path = 'shared/' + encodeString(props.settings, props.items);
-    const cur = parse(useLocation);
-    return cur.protocol + '://' + cur.host + '/' + path;
+    const loc = document.location;
+    const cur = URL.parse(loc);
+    return cur.protocol + '//' + cur.host + '/' + path;
   }
 
   return (
