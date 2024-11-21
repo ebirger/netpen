@@ -1,5 +1,5 @@
 from itertools import chain
-from prettytable import PrettyTable, ALL
+from prettytable import PrettyTable, HRuleStyle
 from .topology import TopologyMember
 
 
@@ -104,7 +104,7 @@ class NetNs(TopologyMember):
     @classmethod
     def bash_preamble(cls, topology):
         topology.printfn('cat << EOF')
-        t = PrettyTable(('Namespace', 'IPv4'), hrules=ALL)
+        t = PrettyTable(('Namespace', 'IPv4'), hrules=HRuleStyle.ALL)
         t.align['IPv4'] = 'l'
         for ns in topology.objects[cls.REF]:
             t.add_row(ns.render_table_row())
