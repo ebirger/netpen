@@ -52,7 +52,7 @@ export default function NewItem(props) {
         <Row>
           <Col flex="auto">
             <Field title="Name">
-              <Input onChange={onNameChange} />
+              <Input onChange={onNameChange} onPressEnter={onDone} />
             </Field>
           </Col>
         </Row>
