@@ -1,12 +1,12 @@
 import React from 'react'
 import { useMediaQuery } from 'react-responsive';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { ExamplesPenLoader } from './components/Examples.js';
 import { PersonalPenLoader } from './components/PersonalPens.js';
 import { SharedPenLoader } from './components/Share.js';
 import PenEditor from './components/PenEditor.js';
 import MainPage from './components/MainPage.js';
-import 'antd/dist/antd.less';
+import 'antd/dist/reset.css';
 import './App.css';
 
 function App() {
@@ -22,24 +22,14 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Switch>
-          <Route exact path="/" render={() => <Redirect to="/main" />} />
-          <Route exact path="/pen">
-            <PenEditor />
-          </Route>
-          <Route exact path="/main">
-            <MainPage />
-          </Route>
-          <Route path="/shared/:id">
-            <SharedPenLoader />
-          </Route>
-          <Route path="/personal/:id">
-            <PersonalPenLoader />
-          </Route>
-          <Route path="/examples/:id">
-            <ExamplesPenLoader />
-          </Route>
-        </Switch>
+        <Routes>
+          <Route path="/" element={<Navigate to="/main" replace />} />
+          <Route path="/pen" element={<PenEditor />} />
+          <Route path="/main" element={<MainPage />} />
+          <Route path="/shared/:id" element={<SharedPenLoader />} />
+          <Route path="/personal/:id" element={<PersonalPenLoader />} />
+          <Route path="/examples/:id" element={<ExamplesPenLoader />} />
+        </Routes>
       </BrowserRouter>
     </div>
   );

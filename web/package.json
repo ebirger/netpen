@@ -3,21 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@monaco-editor/react": "4.3.1",
-    "antd": "4.18.8",
-    "ip6addr": "^0.2.3",
+    "@monaco-editor/react": "4.7.0",
+    "antd": "6.3.0",
+    "ip6addr": "^0.2.5",
     "less": "^4.2.0",
-    "react": "17.0.2",
-    "react-copy-to-clipboard": "5.0.4",
-    "react-dom": "17.0.2",
-    "react-github-btn": "1.2.1",
+    "react": "19.2.4",
+    "react-copy-to-clipboard": "5.1.0",
+    "react-dom": "19.2.4",
+    "react-github-btn": "1.4.0",
     "react-map-interaction": "2.1.0",
-    "react-responsive": "^8.2.0",
-    "react-router-dom": "^5.2.0",
-    "reactour": "1.18.7",
-    "styled-components": "^4.0.0",
+    "react-responsive": "^10.0.1",
+    "react-router-dom": "^7.13.0",
+    "reactour": "1.19.4",
+    "styled-components": "^6.3.9",
     "viz.js": "^2.1.2",
-    "yaml": "1.10.2"
+    "yaml": "2.8.2"
   },
   "scripts": {
     "start": "vite --host 0.0.0.0 --port 3000",
@@ -38,12 +38,12 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
-    "eslint": "^7.21.0",
-    "eslint-plugin-jest": "^26.0.0",
-    "eslint-plugin-react": "^7.28.0",
-    "react-test-renderer": "^17.0.2",
-    "vite": "^5.4.11",
-    "vitest": "^2.1.8",
+    "eslint": "^9.39.2",
+    "eslint-plugin-jest": "^29.13.0",
+    "eslint-plugin-react": "^7.37.5",
+    "react-test-renderer": "^19.2.4",
+    "vite": "^6.4.1",
+    "vitest": "^4.0.18",
     "yarn-check": "^0.0.3"
   }
 }

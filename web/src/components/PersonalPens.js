@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import YAML from 'yaml';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { Button, Divider } from 'antd'
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { serializeObjList } from '../models/ObjModel.js';
@@ -41,7 +41,7 @@ export function CopyToPersonalPens(props) {
   }
 
   if (redirect)
-    return redirect;
+    return <Navigate to={redirect} replace />;
 
   const elem = React.Children.only(props.children);
   return React.cloneElement(elem, {onCopy: onCopy});
@@ -68,7 +68,7 @@ function newPersonalPen(title, items) {
   const id = Date.now().toString();
   const def = {settings: { title: title }, items: items};
   savePen(id, def);
-  return <Redirect to={"/personal/" + id} />;
+  return "/personal/" + id;
 }
 
 export function UploadPenButton() {
@@ -95,7 +95,7 @@ export function UploadPenButton() {
   }
 
   if (redirect)
-    return redirect;
+    return <Navigate to={redirect} replace />;
 
   return (
     <>
@@ -120,7 +120,7 @@ export function NewPenButton() {
   }
 
   if (redirect)
-    return redirect;
+    return <Navigate to={redirect} replace />;
 
   return (
     <Button type="primary" icon={<PlusOutlined />} onClick={onAdd}>
