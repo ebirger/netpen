@@ -1,11 +1,11 @@
 dev:
-	docker network create --subnet 10.0.12.1/24 netpen-docker-compose-net || true
-	docker-compose -f docker-compose.yml up
+	docker network create --subnet 10.0.12.0/24 netpen-docker-compose-net || true
+	docker compose -f docker-compose.yml up
 .PHONY: dev
 
 build-dev:
-	docker network create --subnet 10.0.12.1/24 netpen-docker-compose-net || true
-	docker-compose -f docker-compose.yml build
+	docker network create --subnet 10.0.12.0/24 netpen-docker-compose-net || true
+	docker compose -f docker-compose.yml build
 .PHONY: build-dev
 
 yarn-check:
