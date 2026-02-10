@@ -99,7 +99,7 @@ function TunnelAdvanced(props) {
 
   return (
     <>
-      <Modal title="Advanced" visible={advancedOpen} footer={null}
+      <Modal title="Advanced" open={advancedOpen} footer={null}
         onCancel={() => setAdvancedOpen(false)}>
         {props.tunnelParams.mode === "xfrm" ?
           <>

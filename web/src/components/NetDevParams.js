@@ -128,7 +128,7 @@ export default function NetDevParams(props) {
 
   return (
     <>
-      <Modal title={props.item.name} visible={advancedOpen} footer={null}
+      <Modal title={props.item.name} open={advancedOpen} footer={null}
         onCancel={() => setAdvancedOpen(false)}>
         {props.hidemtu ? [] : <Col flex="none">
           <Mtu onChange={setMtu} value={mtu} />
