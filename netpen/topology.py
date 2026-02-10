@@ -126,10 +126,10 @@ class Topology():
                 todo = set(self.objects[cls.REF]) - self.done_list
                 printed_header = False
                 for o in todo:
-                    try:
-                        prereqs = set(nx.dfs_predecessors(self.prereqs, o))
-                    except nx.exception.NetworkXError:
+                    if o not in self.prereqs:
                         prereqs = set()
+                    else:
+                        prereqs = set(nx.dfs_predecessors(self.prereqs, o))
                     if prereqs - self.done_list:
                         missing = True
                         continue
