@@ -190,7 +190,7 @@ export default function Pen(props) {
         parentId: c.parentId ? (rawToContainerId[c.parentId] || c.parentId) : null,
         members: c.nodeIds.filter((id) => parsed.nodes[id]),
       };
-    });
+    }).filter((c) => !(c.id === 'cluster_ebpfprog' && c.members.length === 0));
 
     setGraph({ nodes, edges: parsed.edges, containers });
   }
