@@ -34,6 +34,8 @@ services:
         environment:
             - VITE_API_BASE=/
             - VITE_EXAMPLES_BASE=/example-files/
+            - CHOKIDAR_USEPOLLING=true
+            - CHOKIDAR_INTERVAL=1000
         volumes:
             - ../:/app
             - web_modules:/app/web/node_modules
