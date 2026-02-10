@@ -57,7 +57,7 @@ export default function Preview(props) {
       <Modal title="Preview" open={open} onCancel={handleClose}
         width="1000px" footer={[
           <Button key="ok" type="primary" onClick={handleClose}>Ok</Button>]}>
-        <Editor height="700px" width="900px" defaultLanguage="bash"
+        <Editor height="700px" width="900px" defaultLanguage="shell"
           options={editorOpts} onMount={handleEditorDidMount} />
       </Modal>
     </>
