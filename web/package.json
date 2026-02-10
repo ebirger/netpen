@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@dagrejs/dagre": "^1.1.5",
     "@monaco-editor/react": "4.7.0",
     "antd": "6.3.0",
-    "ip6addr": "^0.2.5",
     "less": "^4.2.0",
     "react": "19.2.4",
     "react-copy-to-clipboard": "5.1.0",

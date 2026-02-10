@@ -13,6 +13,13 @@
   background: #f7f7f7;
 }
 
+.site-layout-content.full-height {
+  min-height: calc(100vh - 64px);
+  height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+}
+
 .gridded {
   background: #f7f7f7;
   background-size: 40px 40px;
@@ -114,4 +121,140 @@ g polygon {
   display: block;
   margin-left: auto;
   margin-right: auto;
+}
+
+.node-canvas {
+  position: relative;
+  min-height: 0;
+  height: 100%;
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f7f7f7;
+  background-size: 24px 24px;
+  background-image:
+    linear-gradient(to right, #ececec 1px, transparent 1px),
+    linear-gradient(to bottom, #ececec 1px, transparent 1px);
+}
+
+.node-canvas-shell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.new-item-compact {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 20;
+}
+
+.node-edges {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.node-edge-line {
+  stroke: #8b8b8b;
+  stroke-width: 2;
+  opacity: 0.85;
+}
+
+.node-edge-label {
+  fill: #333;
+  font-size: 11px;
+  text-anchor: middle;
+}
+
+.node-card {
+  position: absolute;
+  width: 200px;
+  border-radius: 8px;
+  border: 1px solid #d8d8d8;
+  background: #fff;
+  text-align: left;
+  padding: 10px 12px;
+  cursor: move;
+  user-select: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  z-index: 3;
+}
+
+.node-container {
+  position: absolute;
+  border-radius: 8px;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.node-container-netns {
+  border: 2px solid #b7c9f5;
+  background: rgba(210, 226, 255, 0.25);
+}
+
+.node-container-vrf {
+  border: 2px dashed #f0be73;
+  background: rgba(255, 234, 198, 0.30);
+}
+
+.node-container-title {
+  position: absolute;
+  top: -12px;
+  left: 10px;
+  background: #f7f7f7;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #444;
+  text-transform: uppercase;
+}
+
+.node-container-selected {
+  box-shadow: 0 0 0 2px rgba(175, 19, 19, 0.18);
+}
+
+.node-card-selected {
+  border-color: #af1313;
+  box-shadow: 0 0 0 2px rgba(175, 19, 19, 0.15);
+}
+
+.node-card-type {
+  font-size: 12px;
+  color: #666;
+}
+
+.node-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #202020;
+}
+
+.node-card-cidr {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #6a6a6a;
+}
+
+.node-subnet-refs {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.node-subnet-ref {
+  border: 1px solid #d0d0d0;
+  background: #fafafa;
+  color: #555;
+  border-radius: 999px;
+  font-size: 11px;
+  padding: 1px 8px;
+  cursor: pointer;
 }

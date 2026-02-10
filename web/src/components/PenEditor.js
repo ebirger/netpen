@@ -22,7 +22,7 @@ export default function PenEditor(props) {
 
         notification.open({
           key: "read_only_notification",
-          message: `Read only ${orpt}`,
+          title: `Read only ${orpt}`,
           description: `Your changes are not saved, press 'Copy' to clone the ${orpt}`,
           placement: "bottomRight"
         });
@@ -43,11 +43,12 @@ export default function PenEditor(props) {
   }
 
   return (
-    <SiteLayout gridded onTitleChange={onTitleChange} title={settings.title}
+    <SiteLayout gridded fullHeight onTitleChange={onTitleChange} title={settings.title}
       titleitems={
         <ToolbarButtons settings={settings} onCopy={props.onCopy}
           onSettingsChange={setSettings} objlist={objlist} />}>
-      <Pen objlist={objlist} setObjList={setObjList} />
+      <Pen objlist={objlist} setObjList={setObjList}
+        settings={settings} onSettingsChange={setSettings} />
       {settings.description ?
         <PenDescription text={settings.description}/> : 
         []}

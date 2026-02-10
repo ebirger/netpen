@@ -9,8 +9,8 @@ const existingPenSteps = [
     content: 'Copy this pen to your local inventory if you want to make changes',
   },
   {
-    selector: '.items-container',
-    content: 'Item properties are defined here',
+    selector: '.node-card',
+    content: 'Click a node to configure it in the right drawer',
   },
 ];
 

@@ -49,7 +49,7 @@ export default function Settings(props) {
         onClick={handleClickOpen}>
         Settings
       </Button>
-      <Modal title="Settings" visible={open} onOk={onDone}
+      <Modal title="Settings" open={open} onOk={onDone}
         onCancel={handleClose}>
         <Field title="Title">
           <Input onChange={onTitleChange} value={settings.title} />

@@ -22,7 +22,7 @@ import EbpfProg from './EbpfProg.js';
 const { Text } = Typography;
 const { Panel } = Collapse;
 
-const itemComponentTypes = {
+export const itemComponentTypes = {
   netns: NetNs,
   veth: Veth,
   vlan: Vlan,

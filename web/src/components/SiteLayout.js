@@ -13,7 +13,8 @@ export default function SiteLayout(props) {
   const titleEditable = props.onTitleChange ? {onChange: props.onTitleChange} :
     false;
 
-  let contentClass = "site-layout-content" + (props.gridded ? " gridded" : "");
+  let contentClass = "site-layout-content" + (props.gridded ? " gridded" : "") +
+    (props.fullHeight ? " full-height" : "");
 
   return (
     <Layout className="layout">
@@ -45,4 +46,5 @@ SiteLayout.propTypes = {
   titleitems: PropTypes.object,
   onTitleChange: PropTypes.func,
   gridded: PropTypes.bool,
+  fullHeight: PropTypes.bool,
 };

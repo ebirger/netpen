@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types';
-import { Dropdown, Menu, Space } from 'antd';
+import { Dropdown, Space, Button } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import YAML from 'yaml';
 import { API_BASE } from '../consts.js';
@@ -62,25 +62,25 @@ export default function DownloadButton(props) {
     }
   }
 
-  const menu = (
-    <Menu onClick={handleMenuClick}>
-      <Menu.Item key="bash">
-        BASH
-      </Menu.Item>
-      <Menu.Item key="yaml">
-        YAML
-      </Menu.Item>
-    </Menu>
-  );
+  const menuItems = [
+    { key: 'bash', label: 'BASH' },
+    { key: 'yaml', label: 'YAML' },
+  ];
 
   return (
-    <Dropdown.Button id="bashdownload" onClick={getBash}
-      type={props.type || "default"} overlay={menu}>
-      <Space>
-        <DownloadOutlined />
-        Download
-      </Space>
-    </Dropdown.Button>
+    <Space.Compact id="bashdownload">
+      <Button onClick={getBash} type={props.type || "default"} size={props.size}>
+        <Space>
+          <DownloadOutlined />
+          Download
+        </Space>
+      </Button>
+      <Dropdown menu={{ items: menuItems, onClick: handleMenuClick }} trigger={['click']}>
+        <Button type={props.type || "default"} size={props.size}>
+          <DownloadOutlined />
+        </Button>
+      </Dropdown>
+    </Space.Compact>
   );
 }
 

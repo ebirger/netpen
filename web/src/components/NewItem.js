@@ -31,11 +31,14 @@ export default function NewItem(props) {
   }
 
   return (
-    <div style={{ paddingRight: '20px' }} className="new-item">
-      <Button block type="dashed" icon={<PlusOutlined />}
-        onClick={handleClickOpen}
-        style={{ marginLeft: 20 }} />
-      <Modal title="New Item" visible={open} onOk={onDone}
+    <div className={props.compact ? 'new-item new-item-compact' : 'new-item'}
+      style={props.compact ? {} : { paddingRight: '20px' }}>
+      <Button block={!props.compact} type={props.compact ? 'primary' : 'dashed'}
+        shape={props.compact ? 'circle' : 'default'}
+        size={props.compact ? 'small' : 'middle'}
+        icon={<PlusOutlined />} onClick={handleClickOpen}
+        style={props.compact ? {} : { marginLeft: 20 }} />
+      <Modal title="New Item" open={open} onOk={onDone}
         onCancel={handleClose}>
         <Row>
           <Col flex="auto">
@@ -60,4 +63,5 @@ export default function NewItem(props) {
 
 NewItem.propTypes = {
   onDone: PropTypes.func.isRequired,
+  compact: PropTypes.bool,
 };

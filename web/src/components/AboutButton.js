@@ -24,7 +24,7 @@ export default function AboutButton(props) {
   return (
     <>
       <Button type="primary" onClick={handleClickOpen}>About</Button>
-      <Modal title="netpen.io" visible={open} onCancel={handleClose}
+      <Modal title="netpen.io" open={open} onCancel={handleClose}
         footer={null} width={600}>
         <Row gutter={[10, 20]}>
           <Col span={8} />
