@@ -37,7 +37,7 @@ function PenCard(props) {
   return (
     <Card hoverable title={props.name} onClick={onOpen}>
       <Button icon={vieweditIcon} onClick={(e) => { e.stopPropagation(); onOpen(); }}>
-          {vieweditAction}
+        {vieweditAction}
       </Button>
       {props.onCopy ?
         <Button onClick={(e) => { e.stopPropagation(); onCopy(); }} icon={<CopyOutlined />}>

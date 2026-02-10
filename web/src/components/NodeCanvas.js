@@ -313,7 +313,7 @@ export default function NodeCanvas(props) {
         );
       })}
       <svg className="node-edges">
-        {edges.map((e, ei) => {
+        {edges.map((e) => {
           if (!visibleById[e.from] || !visibleById[e.to])
             return null;
           const from = getNodePos(e.from);
