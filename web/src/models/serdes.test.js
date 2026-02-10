@@ -1,5 +1,6 @@
 import fs from 'fs';
 import YAML from 'yaml';
+import { describe, it, expect } from 'vitest';
 import { loadObjList } from '../models/Loader.js';
 import { serializeObjList } from '../models/ObjModel.js';
 
