@@ -19,7 +19,7 @@ export default function SiteLayout(props) {
   return (
     <Layout className="layout">
       <Header className="site-layout-header"
-        style={{ position: 'fixed', zIndex: 1, width: '100%'}}>
+        style={{ position: 'fixed', zIndex: 1000, width: '100%'}}>
         <Link style={{ color: 'inherit' }} to={'/main/'}>
           <Button type="ghost" className="logo"
             icon={<img src={netpen} className="logo-icon" />} />
