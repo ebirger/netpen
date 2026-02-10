@@ -6,7 +6,6 @@ import SiteLayout from './SiteLayout.js';
 import ToolbarButtons from './ToolbarButtons.js';
 import PenDescription from './PenDescription.js';
 import Pen from './Pen.js';
-import PenTour from './PenTour.js';
 
 export default function PenEditor(props) {
   const defObjList = props.defaults ? props.defaults.objlist : {};
@@ -52,7 +51,6 @@ export default function PenEditor(props) {
       {settings.description ?
         <PenDescription text={settings.description}/> : 
         []}
-      <PenTour isExistingPen={props.originalPenType ? true : false} />
     </SiteLayout>
   );
 }

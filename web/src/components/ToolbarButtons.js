@@ -30,7 +30,7 @@ export default function ToolbarButtons(props) {
       <Share settings={props.settings} items={props.objlist} />
       <Settings onChange={props.onSettingsChange} settings={props.settings} />
       <DownloadButton type="primary" getData={getData} />
-      <AboutButton showRestartTour={true} />
+      <AboutButton />
     </Space>);
 }
 

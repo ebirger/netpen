@@ -14,7 +14,6 @@
     "react-map-interaction": "2.1.0",
     "react-responsive": "^10.0.1",
     "react-router-dom": "^7.13.0",
-    "reactour": "1.19.4",
     "styled-components": "^6.3.9",
     "viz.js": "^2.1.2",
     "yaml": "2.8.2"

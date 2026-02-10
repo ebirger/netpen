@@ -1,11 +1,9 @@
 import React from 'react'
-import PropTypes from 'prop-types';
-import { Button, Modal, Alert, Row, Col, Divider } from 'antd';
+import { Button, Modal, Alert, Row, Col } from 'antd';
 import GitHubButton from 'react-github-btn';
 import netpen_light from '../netpen_light.png';
-import { PenTourReset } from './PenTour.js';
 
-export default function AboutButton(props) {
+export default function AboutButton() {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -14,11 +12,6 @@ export default function AboutButton(props) {
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const restartTour = () => {
-    setOpen(false);
-    PenTourReset();
   };
 
   return (
@@ -59,13 +52,6 @@ export default function AboutButton(props) {
               Star
             </GitHubButton>
           </Col>
-          {props.showRestartTour ?
-            <>
-              <Divider />
-              <Button onClick={restartTour}>Restart Tour</Button>
-            </> :
-            []
-          }
           <Col span={24}>
             <Alert type="warning"
               message="This is alpha software. Things may break." />
@@ -75,7 +61,3 @@ export default function AboutButton(props) {
     </>
   );
 }
-
-AboutButton.propTypes = {
-  showRestartTour: PropTypes.bool,
-};
