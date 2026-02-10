@@ -3,12 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@craco/craco": "6.4.3",
     "@monaco-editor/react": "4.3.1",
-    "@svgr/webpack": "^5.5.0",
     "antd": "4.18.8",
-    "craco-less": "1.20.0",
     "ip6addr": "^0.2.3",
+    "less": "^4.2.0",
     "react": "17.0.2",
     "react-copy-to-clipboard": "5.0.4",
     "react-dom": "17.0.2",
@@ -16,17 +14,15 @@
     "react-map-interaction": "2.1.0",
     "react-responsive": "^8.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
     "reactour": "1.18.7",
     "styled-components": "^4.0.0",
     "viz.js": "^2.1.2",
     "yaml": "1.10.2"
   },
   "scripts": {
-    "start": "export NODE_OPTIONS=--openssl-legacy-provider; craco start",
-    "build": "export NODE_OPTIONS=--openssl-legacy-provider; craco build",
-    "test": "craco test",
-    "eject": "react-scripts eject"
+    "start": "vite --host 0.0.0.0 --port 3000",
+    "build": "vite build",
+    "test": "vitest run"
   },
   "browserslist": {
     "production": [
@@ -41,10 +37,13 @@
     ]
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^7.21.0",
     "eslint-plugin-jest": "^26.0.0",
     "eslint-plugin-react": "^7.28.0",
     "react-test-renderer": "^17.0.2",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8",
     "yarn-check": "^0.0.3"
   }
 }

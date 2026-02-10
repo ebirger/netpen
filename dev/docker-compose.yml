@@ -32,8 +32,8 @@ services:
         container_name: netpen-web
         entrypoint: /bin/sh -c "yarn install && yarn start"
         environment:
-            - REACT_APP_API_BASE=/
-            - REACT_APP_EXAMPLES_BASE=/example-files/
+            - VITE_API_BASE=/
+            - VITE_EXAMPLES_BASE=/example-files/
         volumes:
             - ../:/app
             - web_modules:/app/web/node_modules
