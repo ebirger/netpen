@@ -149,7 +149,7 @@ export default function Pen(props) {
     const parsed = parseDot(dot);
     const cidrMap = subnetIdsByCidr();
 
-    const nodes = Object.values(parsed.nodes).map((n) => {
+    let nodes = Object.values(parsed.nodes).map((n) => {
       const ownerId = nodeOwnerFromGraphId(n.id);
       const owner = ownerId ? props.objlist[ownerId] : null;
       let subnetRefs = [];
@@ -167,6 +167,21 @@ export default function Pen(props) {
         subnetRefs,
       };
     });
+
+    const existingSubnetOwnerIds = new Set(nodes
+      .filter((n) => n.type === 'subnet' && n.ownerId)
+      .map((n) => n.ownerId));
+    const syntheticSubnetNodes = Object.values(props.objlist)
+      .filter((o) => o.type === 'subnet' && !existingSubnetOwnerIds.has(o.id))
+      .map((s) => ({
+        id: `subnet_${s.id}`,
+        ownerId: s.id,
+        type: 'subnet',
+        label: s.name,
+        cidrText: s.cidr || '',
+        subnetRefs: [],
+      }));
+    nodes = nodes.concat(syntheticSubnetNodes);
 
     const rawToContainerId = {};
     Object.values(parsed.clusters).forEach((c) => {
@@ -191,6 +206,17 @@ export default function Pen(props) {
         members: c.nodeIds.filter((id) => parsed.nodes[id]),
       };
     }).filter((c) => !(c.id === 'cluster_ebpfprog' && c.members.length === 0));
+
+    const subnetNodeIds = nodes.filter((n) => n.type === 'subnet').map((n) => n.id);
+    if (subnetNodeIds.length > 0 && !containers.find((c) => c.id === 'cluster_subnet')) {
+      containers.push({
+        id: 'cluster_subnet',
+        type: 'subnet',
+        label: 'Subnets',
+        parentId: null,
+        members: subnetNodeIds,
+      });
+    }
 
     setGraph({ nodes, edges: parsed.edges, containers });
   }

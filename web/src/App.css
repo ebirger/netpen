@@ -204,6 +204,11 @@ g polygon {
   background: rgba(255, 234, 198, 0.30);
 }
 
+.node-container-subnet {
+  border: 2px solid #87c493;
+  background: rgba(199, 240, 208, 0.35);
+}
+
 .node-container-title {
   position: absolute;
   top: -12px;

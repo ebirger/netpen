@@ -106,6 +106,10 @@ function computeContainerBounds(containers, visibleItems, positions) {
 
 function buildAutoPositions(items, edges, containers, hiddenIds, basePositions) {
   const visibleItems = items.filter((item) => !hiddenIds.has(item.id));
+  const subnetContainer = containers.find((c) => c.type === 'subnet');
+  const subnetNodeIds = new Set(subnetContainer ? subnetContainer.members : []);
+  const graphItems = visibleItems.filter((item) => !subnetNodeIds.has(item.id));
+  const subnetItems = visibleItems.filter((item) => subnetNodeIds.has(item.id));
   const g = new dagre.graphlib.Graph({ compound: true });
   g.setGraph({
     rankdir: 'TB',
@@ -116,12 +120,14 @@ function buildAutoPositions(items, edges, containers, hiddenIds, basePositions) 
   });
   g.setDefaultEdgeLabel(() => ({}));
 
-  visibleItems.forEach((item) => {
+  graphItems.forEach((item) => {
     g.setNode(item.id, { width: CARD_W, height: CARD_H });
   });
 
   containers.forEach((c) => {
-    const members = c.members.filter((id) => visibleItems.some((n) => n.id === id));
+    if (c.type === 'subnet')
+      return;
+    const members = c.members.filter((id) => graphItems.some((n) => n.id === id));
     if (members.length === 0) {
       const cid = `empty_cluster_${c.id}`;
       g.setNode(cid, { width: 220, height: 80 });
@@ -131,7 +137,7 @@ function buildAutoPositions(items, edges, containers, hiddenIds, basePositions) 
     members.forEach((id) => g.setParent(id, c.id));
   });
 
-  const visibleNodeIds = new Set(visibleItems.map((n) => n.id));
+  const visibleNodeIds = new Set(graphItems.map((n) => n.id));
   edges.forEach((e) => {
     if (!visibleNodeIds.has(e.from) || !visibleNodeIds.has(e.to))
       return;
@@ -141,12 +147,20 @@ function buildAutoPositions(items, edges, containers, hiddenIds, basePositions) 
   dagre.layout(g);
 
   const positions = {};
-  visibleItems.forEach((item) => {
+  graphItems.forEach((item) => {
     const n = g.node(item.id);
     if (n) {
       positions[item.id] = { x: n.x - CARD_W / 2, y: n.y - CARD_H / 2 };
     }
   });
+  if (subnetItems.length > 0) {
+    const graphBottom = Object.values(positions)
+      .reduce((acc, p) => Math.max(acc, p.y + CARD_H), 0);
+    const rowY = graphBottom + 120;
+    subnetItems.forEach((item, idx) => {
+      positions[item.id] = { x: 20 + idx * (CARD_W + 24), y: rowY };
+    });
+  }
   return { ...positions, ...(basePositions || {}) };
 }
 
@@ -287,8 +301,15 @@ export default function NodeCanvas(props) {
     <div className="node-canvas" ref={canvasRef} onClick={() => onSelect(null)}>
       {renderedContainers.map((c) => {
         const b = c.bounds;
-        let cls = c.type === 'netns' ? 'node-container node-container-netns' :
-          'node-container node-container-vrf';
+        let cls;
+        if (c.type === 'netns')
+          cls = 'node-container node-container-netns';
+        else if (c.type === 'vrf')
+          cls = 'node-container node-container-vrf';
+        else if (c.type === 'subnet')
+          cls = 'node-container node-container-subnet';
+        else
+          cls = 'node-container node-container-vrf';
         if (selectedItemId === c.id)
           cls += ' node-container-selected';
 
