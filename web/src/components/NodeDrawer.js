@@ -28,7 +28,7 @@ export default function NodeDrawer(props) {
   return (
     <Drawer
       className="node-drawer"
-      size="default"
+      width={640}
       title={item ? `Configure ${GetTypeName(item.type)}` : 'Configure Node'}
       open={!!item}
       onClose={onClose}

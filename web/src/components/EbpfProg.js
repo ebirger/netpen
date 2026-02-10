@@ -54,7 +54,7 @@ export default function EbpfProg(props) {
 
   return (
     <>
-      <Modal title={props.item.name} visible={advancedOpen} footer={null}
+      <Modal title={props.item.name} open={advancedOpen} footer={null}
         onCancel={() => setAdvancedOpen(false)} height="100vh" width="100vw">
         <>
           <Field title="Example Source">
