@@ -8,18 +8,19 @@ import { Types } from '../Types.js';
 
 export default function NewItem(props) {
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState(false);
+  const [name, setName] = useState('');
   const [type, setType] = useState(Types[0].value);
 
   const handleClickOpen = () => {
+    setName('');
     setOpen(true);
   };
 
   const onDone = () => {
-    if (!name || name === '')
+    if (!name.trim())
       return;
     setOpen(false);
-    props.onDone(type, name);
+    props.onDone(type, name.trim());
   };
 
   const handleClose = () => {
@@ -39,6 +40,7 @@ export default function NewItem(props) {
         icon={<PlusOutlined />} onClick={handleClickOpen}
         style={props.compact ? {} : { marginLeft: 20 }} />
       <Modal title="New Item" open={open} onOk={onDone}
+        okButtonProps={{ disabled: !name.trim() }}
         onCancel={handleClose}>
         <Row>
           <Col flex="auto">
@@ -52,7 +54,7 @@ export default function NewItem(props) {
         <Row>
           <Col flex="auto">
             <Field title="Name">
-              <Input onChange={onNameChange} onPressEnter={onDone} />
+              <Input value={name} onChange={onNameChange} onPressEnter={onDone} />
             </Field>
           </Col>
         </Row>
