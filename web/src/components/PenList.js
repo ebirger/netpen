@@ -2,19 +2,25 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import { Button, Row, Col, Card, Typography, Divider } from 'antd';
 import { EditOutlined, EyeOutlined, DeleteOutlined, CopyOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import DownloadButton from './DownloadButton.js';
 import Preview from './Preview.js';
 
 const { Title } = Typography;
 
 function PenCard(props) {
+  const navigate = useNavigate();
+
   function onDelete() {
     props.onDelete(props.path);
   }
 
   function onCopy() {
     props.getById(props.path, (o) => props.onCopy(o.settings, o.items));
+  }
+
+  function onOpen() {
+    navigate('/' + props.linkpfx + '/' + props.path);
   }
 
   let vieweditAction;
@@ -29,21 +35,22 @@ function PenCard(props) {
   }
 
   return (
-    <Card hoverable title={props.name}>
-      <Link style={{ color: 'inherit' }}
-        to={'/' + props.linkpfx + '/' + props.path}>
-        <Button icon={vieweditIcon}>
+    <Card hoverable title={props.name} onClick={onOpen}>
+      <Button icon={vieweditIcon} onClick={(e) => { e.stopPropagation(); onOpen(); }}>
           {vieweditAction}
-        </Button>
-      </Link>
+      </Button>
       {props.onCopy ?
-        <Button onClick={onCopy} icon={<CopyOutlined />}>
+        <Button onClick={(e) => { e.stopPropagation(); onCopy(); }} icon={<CopyOutlined />}>
           Copy
         </Button> : <span />}
-      <Preview getData={(cb) => { props.getById(props.path, cb); }} />
-      <DownloadButton getData={(cb) => { props.getById(props.path, cb); }} />
+      <span onClick={(e) => e.stopPropagation()}>
+        <Preview getData={(cb) => { props.getById(props.path, cb); }} />
+      </span>
+      <span onClick={(e) => e.stopPropagation()}>
+        <DownloadButton getData={(cb) => { props.getById(props.path, cb); }} />
+      </span>
       {props.onDelete ?
-        <Button onClick={onDelete} icon={<DeleteOutlined />}>
+        <Button onClick={(e) => { e.stopPropagation(); onDelete(); }} icon={<DeleteOutlined />}>
           Delete
         </Button> : <span />}
     </Card>
